@@ -1,0 +1,94 @@
+{% extends "main/common.html" %}
+{% load static i18n %}
+{% block css_links%}
+<link href="{% static 'css/main/controls.css' %}" rel="stylesheet" />
+<link href="{% static 'css/main/pagination.css' %}" rel="stylesheet" />
+<link href="{% static 'css/main/course_details.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block page_content %}
+<div class="course-page">
+  <!-- Main Course Area -->
+  <div class="course-main">
+    <!-- Course Header -->
+    <div class="course-header">
+       <div class="course-info">
+        <h2 class="course-title">Calculus Basics</h2>
+        <span class="current-section">Section: <strong>Introduction</strong></span>
+      </div>
+      <div class="course-actions">
+        <button><i class="fas fa-pen"></i> Edit Section</button>
+        <button><i class="fas fa-upload"></i> Upload Document</button>
+        <button class="archive-btn"><i class="fas fa-box-archive"></i> Archive Section</button>
+        <button><i class="fas fa-plus"></i> Create Quiz</button>
+      </div>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="chat-section">
+      <div class="chat-messages">
+        <div class="chat-message">
+          <p><strong>AI:</strong> This section explains the basic concepts of derivatives.</p>
+        </div>
+        <div class="chat-message user">
+          <p><strong>You:</strong> Can you give me an example of a real-world application?</p>
+        </div>
+        <div class="chat-message">
+          <p><strong>AI:</strong> Sure! Derivatives are used in physics to describe motion...</p>
+        </div>
+      </div>
+
+      <!-- Meta: Document + Quiz Links -->
+      <div class="chat-meta">
+        <span><i class="fas fa-file-alt"></i> <a href="#">Derivatives_Notes.pdf</a></span>
+        <span><i class="fas fa-pen-square"></i> <a href="#">Derivatives Quiz</a></span>
+      </div>
+
+      <!-- In-Chat Action Suggestions -->
+      <div class="chat-actions">
+        <button>Summarize</button>
+        <button>Explain More</button>
+        <button>Translate</button>
+      </div>
+
+      <!-- Chat Input Widget -->
+      <div class="chat-widget">
+        <input type="text" placeholder="Ask a question..." />
+        <button><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+  <!-- Right Sidebar - Table of Contents -->
+ <aside class="right-sidebar">
+  <div class="sidebar-header">
+    <div>
+    <h4>Current Course:</h4>
+    <h3 class="title">  Calculus Basics</h3>
+    </div>
+    <button ><i class="fas fa-pen"></i> Edit Course</button>
+    <button class="archive-btn" ><i class="fas fa-box-archive"></i> Archive Course</button>
+  </div>
+  <ul class="toc-list">
+    <li><a href="#section1">Introduction</a></li>
+    <li><a href="#section2">Derivatives</a></li>
+    <li><a href="#section3">Integrals</a></li>
+    <li><a href="#section4">Limits</a></li>
+    <li><a href="#section5">Applications</a></li>
+  </ul>
+
+  <div class="sidebar-separator"></div>
+
+ <div class="pagination">
+  <button class="page-btn disabled">←</button>
+  <button class="page-btn active">1</button>
+  <button class="page-btn">2</button>
+  <button class="page-btn">→</button>
+</div>
+</aside>
+</div>
+
+{% endblock %}
+
+
+
+

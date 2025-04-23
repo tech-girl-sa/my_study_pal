@@ -1,0 +1,57 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Pal - Learn Smarter</title>
+    <link href="{% static 'css/main/home.css' %}" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo"> <img src="{% static 'images/main/logo.png' %}" alt="Study Pal logo"></div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Login</a></li>
+            <li><a href="signup">Sign Up</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+   <section class="hero">
+    <div class="hero-container">
+        <div class="hero-text">
+            <h1>Learn Smarter, Not Harder</h1>
+            <p>Your personalized study companion</p>
+            <a href="#get-started" class="cta-button">Get Started</a>
+        </div>
+        <div class="hero-image">
+            <img src="{% static 'images/main/robot_head.png' %}" alt="Study Pal illustration">
+        </div>
+    </div>
+</section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="feature-item">
+            <h2>Personalized Study Plans</h2>
+            <p>Tailor your learning experience based on your academic level.</p>
+        </div>
+        <div class="feature-item">
+            <h2>Interactive Course Chats</h2>
+            <p>Ask questions and get real-time answers for each course.</p>
+        </div>
+        <div class="feature-item">
+            <h2>Adaptive Quizzes</h2>
+            <p>Test your knowledge with quizzes that adapt to your progress.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Study Pal. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Step 4 – Preferences | Study Pal</title>
+  <link href="{% static 'css/main/onboarding.css' %}" rel="stylesheet" />
+</head>
+<body class="onboarding-page">
+  <div class="progress-wrapper">
+    <div class="progress-bar">
+      <div class="step step-active">1</div>
+      <div class="bar bar-active"></div>
+      <div class="step step-active">2</div>
+      <div class="bar bar-active"></div>
+      <div class="step step-active">3</div>
+      <div class="bar bar-active"></div>
+      <div class="step step-active">4</div>
+    </div>
+  </div>
+  <div class="form-area">
+    <img class="robot-head" src="{% static 'images/main/robot_head_left.png' %}" alt="Smart Robot">
+    <form class="onboarding-form" action="dashboard.html">
+      <h2>🔧 How can we help you best?</h2>
+      <p class="subtext">Choose how you'd like to use Study Pal.</p>
+
+     <label>💡 What kind of help are you looking for?</label>
+        <div class="checkbox-group">
+          <div class="option-group">
+          <input type="checkbox" name="support-type" value="summarize">
+          <label> Summarize my courses </label>
+        </div>
+
+        <div class="option-group">
+          <input type="checkbox" name="support-type" value="translate">
+          <label> Translate material </label>
+        </div>
+
+        <div class="option-group">
+          <input type="checkbox" name="support-type" value="explain">
+          <label> Explain difficult concepts </label>
+        </div>
+
+        <div class="option-group">
+          <input type="checkbox" name="support-type" value="chat">
+          <label> Ask questions via chat </label>
+        </div>
+
+        <div class="option-group">
+          <input type="checkbox" name="support-type" value="quiz">
+          <label> Generate quizzes/tests </label>
+        </div>
+        </div>
+
+      <button type="submit">Finish</button>
+    </form>
+  </div>
+</body>
+</html>

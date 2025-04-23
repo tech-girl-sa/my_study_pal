@@ -1,0 +1,39 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Step 3 – Subjects | Study Pal</title>
+  <link href="{% static 'css/main/onboarding.css' %}" rel="stylesheet" />
+</head>
+<body class="onboarding-page">
+  <div class="progress-wrapper">
+    <div class="progress-bar">
+      <div class="step step-active">1</div>
+      <div class="bar bar-active"></div>
+      <div class="step step-active">2</div>
+      <div class="bar bar-active"></div>
+      <div class="step step-active">3</div>
+      <div class="bar"></div>
+      <div class="step">4</div>
+    </div>
+  </div>
+  <div class="form-area">
+    <img class="robot-head" src="{% static 'images/main/robot_head_left.png' %}" alt="Smart Robot">
+    <form class="onboarding-form" action="onboarding-step4.html">
+      <h2>📖 What are you learning?</h2>
+      <p class="subtext">List your main subjects and what you want help with.</p>
+
+      <label for="subjects">📝 Subjects you're studying</label>
+      <input type="text" id="subjects" name="subjects" placeholder="e.g. Math, History, Physics" required />
+
+      <label for="goals">🎯 What are your learning goals?</label>
+      <textarea id="goals" name="goals" placeholder="e.g. Prepare for exams, understand lectures better, etc." rows="4" required></textarea>
+
+      <button type="submit">Next</button>
+    </form>
+  </div>
+</body>
+</html>
+

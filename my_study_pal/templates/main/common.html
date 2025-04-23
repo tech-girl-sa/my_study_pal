@@ -1,0 +1,43 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | Study Pal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="{% static 'css/main/common.css' %}" rel="stylesheet" />
+  {% block css_links%}
+  {% endblock %}
+</head>
+<body class="dashboard-page">
+<div class="navbar">
+  <div class="logo"> <img src="{% static 'images/main/logo.png' %}" alt="Study Pal logo"></div>
+  <div class="navbar-icons">
+    <i class="fas fa-bell"></i>
+    <i class="fas fa-user-circle"></i>
+  </div>
+</div>
+  <div class="dashboard-layout">
+
+    <aside class="sidebar">
+  <nav class="nav">
+    <a href="/main/dashboard" class="nav-link active"><i class="fas fa-home"></i> Home</a>
+    <a href="/main/subjects"><i class="fas fa-book"></i> Subjects</a>
+    <a href="/main/courses"><i class="fas fa-copy"></i> Courses</a>
+    <a href="#"><i class="fas fa-folder-open"></i> Documents</a>
+    <a href="#"><i class="fas fa-pen-nib"></i> Quizzes</a>
+    <a href="#"><i class="fas fa-cog"></i> Settings</a>
+  </nav>
+  <div class="sidebar-footer">© 2025 Study Pal</div>
+</aside>
+
+   <main class="main-content">
+      {% block page_content %}
+     {% endblock %}
+
+   </main>
+
+  </div>
+</body>
+</html>

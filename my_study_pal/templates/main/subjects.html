@@ -1,0 +1,109 @@
+{% extends "main/common.html" %}
+{% load static i18n %}
+{% block css_links%}
+<link href="{% static 'css/main/subjects.css' %}" rel="stylesheet" />
+<link href="{% static 'css/main/pagination.css' %}" rel="stylesheet" />
+<link href="{% static 'css/main/controls.css' %}" rel="stylesheet" />
+{% endblock %}
+
+   {% block page_content %}
+<div class="subjects-page">
+  <!-- Page Header -->
+  <div class="subjects-header">
+    <h1>All Subjects</h1>
+    <p class="subtitle">Explore all the subjects in your study space.</p>
+  </div>
+
+  <!-- Top Controls -->
+  <div class="controls">
+    <div class="search-bar">
+      <input type="text" placeholder="Search subjects..." />
+      <i class="fas fa-search"></i>
+    </div>
+    <select class="filter-dropdown">
+      <option value="">Filter</option>
+      <option value="most-courses">Most Courses</option>
+      <option value="recent">Recently Added</option>
+    </select>
+    <select class="sort-dropdown">
+      <option value="">Sort by</option>
+      <option value="az">A-Z</option>
+      <option value="za">Z-A</option>
+    </select>
+    <button class="create-subject-btn">
+      <i class="fas fa-plus"></i> Create New Subject
+    </button>
+  </div>
+   <div class="tag-filters">
+    <button>STEM</button>
+    <button>Humanities</button>
+    <button>Languages</button>
+    <button>Popular</button>
+    <button>New</button>
+  </div>
+</div>
+
+
+<div class="subjects-grid">
+  <div class="subject-card">
+    <div class="subject-info">
+      <h3 class="subject-name">Mathematics</h3>
+      <p class="subject-description">Explore algebra, calculus, and statistics with 10 courses available.</p>
+      <div class="subject-meta">
+        <span><strong>10</strong> Courses</span>
+        <span><strong>8</strong> Documents</span>
+        <span><strong>5</strong> Quizzes</span>
+      </div>
+      <div class="subject-tags">
+        <span class="tag">STEM</span>
+        <span class="tag">Popular</span>
+      </div>
+    </div>
+     <a href="subjects/1" class="subject-action">View Details <i class="fas fa-arrow-right"></i></a>
+  </div>
+
+  <div class="subject-card">
+    <div class="subject-info">
+      <h3 class="subject-name">Biology</h3>
+      <p class="subject-description">Dive into the world of cells, ecosystems, and evolution with 7 courses.</p>
+      <div class="subject-meta">
+        <span><strong>7</strong> Courses</span>
+        <span><strong>5</strong> Documents</span>
+        <span><strong>3</strong> Quizzes</span>
+      </div>
+       <div class="subject-tags">
+        <span class="tag">STEM</span>
+        <span class="tag">New</span>
+      </div>
+    </div>
+     <a href="#" class="subject-action">View Details <i class="fas fa-arrow-right"></i></a>
+  </div>
+
+  <div class="subject-card">
+    <div class="subject-info">
+      <h3 class="subject-name">History</h3>
+      <p class="subject-description">Learn about ancient civilizations, world wars, and cultural revolutions.</p>
+      <div class="subject-meta">
+        <span><strong>6</strong> Courses</span>
+        <span><strong>4</strong> Documents</span>
+        <span><strong>2</strong> Quizzes</span>
+      </div>
+      <div class="subject-tags">
+        <span class="tag">Humanities</span>
+        <span class="tag">Popular</span>
+      </div>
+    </div>
+   <a href="#" class="subject-action">View Details <i class="fas fa-arrow-right"></i></a>
+  </div>
+</div>
+
+<div class="pagination">
+  <button class="page-btn disabled">←</button>
+  <button class="page-btn active">1</button>
+  <button class="page-btn">2</button>
+  <button class="page-btn">3</button>
+  <button class="page-btn">→</button>
+</div>
+
+
+    {% endblock %}

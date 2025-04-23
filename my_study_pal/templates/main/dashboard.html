@@ -1,0 +1,154 @@
+{% extends "main/common.html" %}
+{% load static i18n %}
+{% block css_links%}
+<link href="{% static 'css/main/dashboard.css' %}" rel="stylesheet" />
+<link href="{% static 'css/main/section.css' %}" rel="stylesheet" />
+<link href="{% static 'css/main/action_btns.css' %}" rel="stylesheet" />
+{% endblock %}
+
+   {% block page_content %}
+  <section class="chat-widget">
+    <div class="chat-header">
+      <i class="fas fa-comments chat-icon"></i>
+      <h3>Ask a question or upload your materials</h3>
+    </div>
+    <form class="chat-form">
+      <input type="text" placeholder="Type your question..." />
+      <button type="submit"><i class="fas fa-paper-plane"></i></button>
+    </form>
+    <div class="action-buttons center">
+      <button><i class="fas fa-plus"></i> New Subject</button>
+      <button><i class="fas fa-plus"></i> New Course</button>
+      <button><i class="fa-solid fa-file-circle-plus"></i> New Document</button>
+      <button><i class="fas fa-rocket"></i> New Quiz</button>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-header">
+      <h3><i class="fas fa-book"></i> Recent Subjects</h3>
+      <a href="#">View all</a>
+    </div>
+  <div class="card-container">
+  <div class="content-card">
+    <div class="card-header">
+      <div class="subject-title">Mathematics</div>
+      <div class="course-count">10 Courses</div>
+    </div>
+    <div class="card-body">
+      <p>A wide range of topics from algebra to calculus.</p>
+    </div>
+    <div class="card-footer">
+      <div class="link-group">
+        <a href="#" class="documents">
+          <i class="fas fa-file-alt"></i> 8 Documents
+        </a>
+        <a href="#" class="quizzes">
+          <i class="fas fa-pencil-alt"></i> 5 Quizzes
+        </a>
+      </div>
+      <a href="#">View All Courses</a>
+    </div>
+  </div>
+  <!-- Subject 2: Science -->
+  <div class="content-card">
+    <div class="card-header">
+      <div class="subject-title">Science</div>
+      <div class="course-count">8 Courses</div>
+    </div>
+    <div class="card-body">
+      <p>Explore the fascinating world of physics, chemistry, and biology.</p>
+    </div>
+    <div class="card-footer">
+      <div class="link-group">
+        <a href="#" class="documents">
+          <i class="fas fa-file-alt"></i> 12 Documents
+        </a>
+        <a href="#" class="quizzes">
+          <i class="fas fa-pencil-alt"></i> 6 Quizzes
+        </a>
+      </div>
+      <a href="#" class="view-all">View All Courses</a>
+    </div>
+  </div>
+     <div class="content-card">
+    <div class="card-header">
+      <div class="subject-title">Literature</div>
+      <div class="course-count">15 Courses</div>
+    </div>
+    <div class="card-body">
+      <p>Delve into classic and modern literature from various authors.</p>
+    </div>
+    <div class="card-footer">
+      <div class="link-group">
+        <a href="#" class="documents">
+          <i class="fas fa-file-alt"></i> 10 Documents
+        </a>
+        <a href="#" class="quizzes">
+          <i class="fas fa-pencil-alt"></i> 4 Quizzes
+        </a>
+      </div>
+      <a href="#" class="view-all">View All Courses</a>
+    </div>
+  </div>
+
+</div>
+
+
+  </section>
+
+  <section class="section-block">
+    <div class="section-header">
+      <h3><i class="fas fa-copy"></i> Recent Courses</h3>
+      <a href="#">View all</a>
+    </div>
+  <div class="table-container">
+    <table class="courses-table">
+      <thead>
+        <tr>
+          <th>Course Title</th>
+          <th>Subject</th>
+          <th>View Course</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Course 1 -->
+        <tr>
+          <td><a href="#" class="course-title">Advanced Calculus</a></td>
+          <td>Mathematics</td>
+          <td><a href="#" class="view-course-link">View Course</a></td>
+        </tr>
+
+        <!-- Course 2 -->
+        <tr>
+          <td><a href="#" class="course-title">Organic Chemistry</a></td>
+          <td>Science</td>
+          <td><a href="#" class="view-course-link">View Course</a></td>
+        </tr>
+
+        <!-- Course 3 -->
+        <tr>
+          <td><a href="#" class="course-title">Shakespearean Literature</a></td>
+          <td>Literature</td>
+          <td><a href="#" class="view-course-link">View Course</a></td>
+        </tr>
+
+        <!-- Course 4 -->
+        <tr>
+          <td><a href="#" class="course-title">Data Structures and Algorithms</a></td>
+          <td>Computer Science</td>
+          <td><a href="#" class="view-course-link">View Course</a></td>
+        </tr>
+
+        <!-- Course 5 -->
+        <tr>
+          <td><a href="#" class="course-title">Modern Art History</a></td>
+          <td>Arts</td>
+          <td><a href="#" class="view-course-link">View Course</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+  </section>
+{% endblock %}

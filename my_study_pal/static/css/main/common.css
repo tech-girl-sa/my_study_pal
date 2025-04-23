@@ -1,0 +1,142 @@
+.dashboard-page {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f6f9fc;
+  color: #1c2b38;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-layout {
+  display: flex;
+  width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #1c2b38;
+  color: white;
+  padding: 20px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.nav a {
+  color: #ccd9e3;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav a.active,
+.nav a:hover {
+  color: #ffffff;
+}
+
+/* Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-header h2 {
+  font-size: 1.6rem;
+}
+
+.user-controls span {
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+/* Content Section */
+.content-section {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  font-size: 1rem;
+}
+/* Navbar */
+.navbar {
+  background-color: #1c2b38;
+  padding: 5px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.navbar-icons {
+  display: flex;
+  gap: 30px;
+}
+
+.navbar-icons i {
+  font-size: 1.4rem;
+  color: #2a93d5;
+  cursor: pointer;
+}
+
+/* Sidebar updated */
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav a {
+  color: #ccd9e3;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 12px 10px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav a.active,
+.nav a:hover {
+  color: #ffffff;
+}
+
+.nav i {
+  color: #e0f0ff;
+  font-size: 1.1rem;
+  margin-left: 30px;
+}
+
+/* Footer inside sidebar */
+.sidebar-footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #9cb2c6;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.navbar .logo img{
+    height: 3.5rem;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to right, #b2e2f4, #d8f2ff);
+}

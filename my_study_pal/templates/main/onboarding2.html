@@ -1,0 +1,50 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Step 2 – Academic Info | Study Pal</title>
+  <link href="{% static 'css/main/onboarding.css' %}" rel="stylesheet" />
+</head>
+<body class="onboarding-page">
+  <div class="progress-wrapper">
+    <div class="progress-bar">
+      <div class="step step-active">1</div>
+      <div class="bar bar-active"></div>
+      <div class="step step-active">2</div>
+      <div class="bar"></div>
+      <div class="step">3</div>
+      <div class="bar"></div>
+      <div class="step">4</div>
+    </div>
+  </div>
+  <div class="form-area">
+    <img class="robot-head" src="{% static 'images/main/robot_head_left.png' %}" alt="Smart Robot">
+    <form class="onboarding-form" action="onboarding-step3.html">
+      <h2>🎓 Tell us about your studies</h2>
+      <p class="subtext">So we can help you stay organized.</p>
+
+      <label for="academic-level">📚 What’s your current academic level?</label>
+      <select id="academic-level" name="academic-level" required>
+        <option value="">-- Choose one --</option>
+        <option value="middle">Middle School</option>
+        <option value="high">High School</option>
+        <option value="university">University</option>
+        <option value="vocational">Vocational / Formation</option>
+        <option value="self">Self-learning</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="institution">🏫 Institution name (optional)</label>
+      <input type="text" id="institution" name="institution" placeholder="e.g. National University" />
+
+      <label for="semester">📅 Current year or semester (if applicable)</label>
+      <input type="text" id="semester" name="semester" placeholder="e.g. 2nd year, Semester 1" />
+
+      <button type="submit">Next</button>
+    </form>
+  </div>
+</body>
+</html>
+

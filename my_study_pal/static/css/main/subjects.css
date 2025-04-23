@@ -1,0 +1,121 @@
+.subjects-page {
+  padding: 40px;
+}
+
+.subjects-header h1 {
+  font-size: 2rem;
+  color: #1c2b38;
+  margin-bottom: 5px;
+}
+
+.subjects-header .subtitle {
+  font-size: 1rem;
+  color: #617182;
+  margin-bottom: 25px;
+}
+
+
+/* Create Subject Button */
+.create-subject-btn {
+  background-color: #2a93d5;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-subject-btn i {
+  font-size: 1.1rem;
+}
+
+.create-subject-btn:hover {
+  background-color: #237bb0;
+}
+
+
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.subject-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  padding: 25px 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease;
+}
+
+.subject-card:hover {
+  transform: translateY(-3px);
+}
+
+.subject-name {
+  font-size: 1.3rem;
+  color: #1c2b38;
+  margin-bottom: 8px;
+}
+
+.subject-description {
+  font-size: 0.95rem;
+  color: #546377;
+  margin-bottom: 15px;
+}
+
+.subject-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 0.85rem;
+  color: #6f8295;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.subject-meta span {
+  display: inline-block;
+}
+
+.subject-action {
+  align-self: flex-end;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2a93d5;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.subject-action i {
+  font-size: 1rem;
+}
+
+
+/* Tags inside cards */
+.subject-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.subject-tags .tag {
+  background-color: #e0f4fd;
+  color: #2a93d5;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+

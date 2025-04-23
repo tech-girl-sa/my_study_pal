@@ -1,0 +1,39 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Step 1 – About You | Study Pal</title>
+  <link href="{% static 'css/main/onboarding.css' %}" rel="stylesheet" />
+</head>
+<body class="onboarding-page">
+  <div class="progress-wrapper">
+    <div class="progress-bar">
+      <div class="step step-active">1</div>
+      <div class="bar"></div>
+      <div class="step">2</div>
+      <div class="bar"></div>
+      <div class="step">3</div>
+      <div class="bar"></div>
+      <div class="step">4</div>
+    </div>
+  </div>
+  <div class="form-area">
+  <img class="robot-head" src="{% static 'images/main/robot_head_left.png' %}" alt="Smart Robot">
+  <form class="onboarding-form" action="onboarding-step2.html">
+    <h2>👋 Hi there! Let’s get started</h2>
+    <p class="subtext">We’d love to know a little more about you.</p>
+
+    <label for="nickname">💬 What should we call you?</label>
+    <input type="text" id="nickname" name="nickname" placeholder="e.g. Sarah" required />
+
+    <label for="age">🎂 How old are you?</label>
+    <input type="number" id="age" name="age" placeholder="e.g. 18" min="5" max="100" required />
+
+
+    <button type="submit">Next</button>
+  </form>
+  </div>
+</body>
+</html>
