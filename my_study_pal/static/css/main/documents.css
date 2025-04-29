@@ -1,0 +1,73 @@
+/* Upload Section */
+.upload-section {
+  background: #ffffff0a;
+  border: 1px solid #ffffff12;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.upload-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.upload-widget {
+  border: 4px dashed #2a93d5;
+  background-color: transparent;
+  padding: 3rem 2rem;
+  text-align: center;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  position: relative;
+  color: #ccc;
+}
+
+.upload-widget:hover {
+  background-color: #ffffff05;
+  border-color: #40b0ff;
+}
+
+.upload-widget i {
+  font-size: 2.5rem;
+  color: #2a93d5;
+  margin-bottom: 0.75rem;
+}
+
+.upload-widget p {
+  font-size: 1rem;
+  margin: 0;
+  color: #aaa;
+}
+
+
+.upload-widget p {
+  margin: 0;
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Documents Section */
+.documents-section {
+  background: #ffffff0a;
+  border: 1px solid #ffffff12;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+/* Delete Button */
+.delete-btn {
+  background: none;
+  border: none;
+  color: #d9534f;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.delete-btn:hover {
+  color: #c9302c;
+}
+
+

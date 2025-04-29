@@ -1,0 +1,94 @@
+{% extends "main/common.html" %}
+{% load static %}
+{% block css_links %}
+<link href="{% static 'css/main/quizzes.css' %}" rel="stylesheet" />
+<link href="{% static 'css/main/controls.css' %}" rel="stylesheet" />
+<link href="{% static 'css/main/pagination.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block page_content %}
+<div class="quizzes-page">
+
+  <div class="page-header">
+    <h2>Quizzes</h2>
+    <div class="generate-form">
+      <select>
+        <option>Select Course</option>
+        <option>Mathematics</option>
+        <option>Physics</option>
+      </select>
+      <select>
+        <option>Select Section</option>
+        <option>Algebra I</option>
+        <option>Calculus Basics</option>
+      </select>
+      <button class="generate-btn"><i class="fas fa-plus"></i> Generate Quiz</button>
+    </div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="search-bar">
+      <input type="text" placeholder="Search quizzes..." />
+      <i class="fas fa-search"></i>
+    </div>
+    <select class="sort-dropdown">
+      <option>Sort by</option>
+      <option>Newest</option>
+      <option>Oldest</option>
+      <option>Title (A-Z)</option>
+    </select>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Quiz Title</th>
+        <th>Subject</th>
+        <th>Course</th>
+        <th>Section</th>
+        <th>Created</th>
+        <th>Questions</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="#">Algebra Basics Quiz</a></td>
+        <td>Mathematics</td>
+        <td>Algebra I</td>
+        <td>Chapter 1</td>
+        <td>Apr 5, 2025</td>
+        <td>10</td>
+        <td class="actions">
+          <button class="icon-btn" title="Edit"><i class="fas fa-pen"></i></button>
+            <button class="icon-btn" title="Delete">
+    <i class="fas fa-trash" ></i>
+  </button>
+        </td>
+      </tr>
+      <tr>
+        <td><a href="#">Calculus Practice Quiz</a></td>
+        <td>Mathematics</td>
+        <td>Calculus</td>
+        <td>Limits</td>
+        <td>Apr 10, 2025</td>
+        <td>12</td>
+        <td class="actions">
+          <button class="icon-btn" title="Edit"><i class="fas fa-pen"></i></button>
+            <button class="icon-btn" title="Delete">
+    <i class="fas fa-trash"></i>
+  </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <button class="page-btn disabled">←</button>
+    <button class="page-btn active">1</button>
+    <button class="page-btn">2</button>
+    <button class="page-btn">→</button>
+  </div>
+
+</div>
+{% endblock %}

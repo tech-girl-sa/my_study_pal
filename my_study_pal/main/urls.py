@@ -39,21 +39,32 @@ urlpatterns = [
     path(
         "subjects",
         TemplateView.as_view(template_name="main/subjects.html"),
-        name="dashboard",
+        name="subjects",
     ),
 path(
         "subjects/<int:subject_id>/",
         TemplateView.as_view(template_name="main/subject_details.html"),
-        name="dashboard",
+        name="subject_details",
     ),
 path(
         "courses",
         TemplateView.as_view(template_name="main/courses.html"),
-        name="dashboard",
+        name="course",
     ),
 path(
         "courses/<int:course_id>/",
         TemplateView.as_view(template_name="main/course_details.html"),
-        name="dashboard",
+        name="course_details",
+    ),
+
+path(
+        "documents/",
+        TemplateView.as_view(template_name="main/documents.html"),
+        name="documents",
+    ),
+path(
+        "quizzes/",
+        TemplateView.as_view(template_name="main/quizzes.html"),
+        name="quizzes",
     ),
     ]
