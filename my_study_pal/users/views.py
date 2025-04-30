@@ -8,7 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from my_study_pal.users.models import User
 
-from .serializers import UserSerializer
+from my_study_pal.users.serializers import UserSerializer
 
 
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
