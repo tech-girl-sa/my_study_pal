@@ -15,7 +15,7 @@ class User(AbstractUser):
 
 class UserInfo(models.Model):
     user = models.OneToOneField("User", verbose_name="User", on_delete=models.CASCADE, related_name="user")
-    age = models.PositiveIntegerField("How old are you?")
+    age = models.PositiveIntegerField("How old are you?", blank=True)
 
     class AcademicLevelChoices(models.TextChoices):
         MIDDLE_SCHOOL = "middle_school", "Middle School"
@@ -39,12 +39,12 @@ class UserInfo(models.Model):
         GENERATE_QUIZZES = "generate_quizzes", "Generate quizzes"
 
     required_help = ArrayField(
-        models.CharField(max_length=100),
-        choices=RequiredHelpChoices.choices,
+        models.CharField(max_length=100, choices=RequiredHelpChoices.choices),
         size=5,
         blank=True,
         default=list
     )
+
 
 
 
