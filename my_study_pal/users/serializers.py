@@ -1,13 +1,11 @@
 from rest_framework import serializers
 
-from my_study_pal.users.models import User
+from my_study_pal.users.models import UserInfo
 
 
-class UserSerializer(serializers.ModelSerializer[User]):
+class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ["username", "url"]
+        model = UserInfo
+        exclude = ['user']
 
-        extra_kwargs = {
-            "url": {"view_name": "api:user-detail", "lookup_field": "username"},
-        }
+

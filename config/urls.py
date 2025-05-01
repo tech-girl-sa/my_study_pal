@@ -27,6 +27,8 @@ urlpatterns += [
     path('api/', include('dj_rest_auth.urls')),
     path('api/registration/', RegisterView.as_view(), name='rest_verify_email'),
     path("api/auth-token/", obtain_auth_token, name="obtain_auth_token"),
+    path("api/", include('users.urls')),
+
 ]
 
 if settings.DEBUG:
