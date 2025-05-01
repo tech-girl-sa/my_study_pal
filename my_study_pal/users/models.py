@@ -14,7 +14,7 @@ class User(AbstractUser):
 
 
 class UserInfo(models.Model):
-    user = models.OneToOneField("User", verbose_name="User", on_delete=models.CASCADE, related_name="user")
+    user = models.OneToOneField("User", verbose_name="User", on_delete=models.CASCADE, related_name="user_info")
     age = models.PositiveIntegerField("How old are you?", blank=True)
 
     class AcademicLevelChoices(models.TextChoices):
