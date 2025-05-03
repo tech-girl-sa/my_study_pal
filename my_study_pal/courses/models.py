@@ -39,3 +39,18 @@ class Section(models.Model):
         """#TODO increament token index when trying to save existing one in DB"""
         self.token = ''.join(char for char in self.title.lower().replace(" ","_") if char.isalnum() or char =="_")
         super().save()
+
+
+class Message(models.Model):
+    class SenderChoices(models.TextChoices):
+        user = "user", "User"
+        ai_agent = "ai_model", "AI Model"
+    sender = models.CharField("Sender", choices=SenderChoices.choices, max_length=50)
+    content = models.TextField("Content", max_length=5000)
+    section = models.ForeignKey("courses.Section", verbose_name="Section", on_delete=models.CASCADE,
+                                related_name="messages")
+    user = models.ForeignKey("users.User", verbose_name="User", on_delete=models.CASCADE, related_name="messages",
+                             blank=True, null=True)
+    ai_model = models.ForeignKey("ai_utilities.AiModel", verbose_name="AI Model", on_delete=models.SET_NULL,
+                                 related_name="messages", null=True, blank=True)
+    created_at = models.DateTimeField("Created at", auto_now_add=True)

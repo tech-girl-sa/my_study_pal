@@ -1,11 +1,12 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, decorators, response, viewsets, mixins
+from rest_framework import filters, decorators, response, viewsets, mixins, status, views
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.viewsets import ModelViewSet
 from django_filters import rest_framework as dfilters
-from my_study_pal.courses.models import Course, Section
-from my_study_pal.courses.serializers import CourseSerializer,  SectionSerializer
+from my_study_pal.courses.models import Course, Section, Message
+from my_study_pal.courses.serializers import CourseSerializer, SectionSerializer, MessageSerializer, \
+    CreateMessageSerializer
 from my_study_pal.subjects.models import Subject
 from my_study_pal.subjects.views import ArrayContainsFilter
 
@@ -82,11 +83,23 @@ class SectionsViewset(
         instance.save()
 
 
-    #TODO add messages
-    # @decorators.action(detail=True, methods=['get'])
-    # def messages(self, request, *args, **kwargs):
-    #     sections = self.get_object().messages
-    #     if sections:
-    #         serializer = SectionsSerializer(sections)
-    #         return response.Response(serializer.data)
-    #     return response.Response({"detail": "No sections in this course."}, status=404)
+
+
+class CreateSectionMessageView(mixins.CreateModelMixin, mixins.ListModelMixin ,viewsets.GenericViewSet):
+    serializer_class = CreateMessageSerializer
+    queryset = Message.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return MessageSerializer
+        else:
+            return CreateMessageSerializer
+
+    def get_queryset(self):
+        section_id =  self.kwargs["section_id"]
+        return self.queryset.filter(section__id=section_id)
+
+    def perform_create(self, serializer):
+        section = Section.objects.get(id=self.kwargs["section_id"])
+        serializer.save(user= self.request.user, sender= Message.SenderChoices.user,
+                        section= section)

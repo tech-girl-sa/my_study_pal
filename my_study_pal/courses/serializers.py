@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer,ListSerializer
 
-from my_study_pal.courses.models import Course, Section
+from my_study_pal.courses.models import Course, Section, Message
 
 
 class CourseSerializer(ModelSerializer):
@@ -13,5 +13,18 @@ class SectionSerializer(ModelSerializer):
     class Meta:
         model = Section
         fields = ['id','title', 'description', 'course']
+
+class MessageSerializer(ModelSerializer):
+    class Meta:
+        model = Message
+        fields = "__all__"
+
+
+class CreateMessageSerializer(ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ["content"]
+
+
 
 
