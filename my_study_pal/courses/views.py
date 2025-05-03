@@ -103,3 +103,34 @@ class CreateSectionMessageView(mixins.CreateModelMixin, mixins.ListModelMixin ,v
         section = Section.objects.get(id=self.kwargs["section_id"])
         serializer.save(user= self.request.user, sender= Message.SenderChoices.user,
                         section= section)
+
+    #TODO return response of the AI instead of the user message
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+def identify_section():
+    """Identify to which section the message belongs using AI"""
+    pass
+
+
+
+class CreateDashboardMessageView(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    serializer_class = CreateMessageSerializer
+
+    def perform_create(self, serializer):
+        section = identify_section()
+        serializer.save(user=self.request.user, sender=Message.SenderChoices.user,
+                        section=section)
+
+    # TODO return response of the AI instead of the user message
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

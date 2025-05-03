@@ -13,5 +13,7 @@ router.register(r"sections", SectionsViewset, basename="section")
 urlpatterns = [
     path('', include(router.urls)),
     path('sections/<int:section_id>/messages', CreateSectionMessageView.as_view({"post":"create", "get":"list"})
+         ,name="section_messages"),
+    path('messages/', CreateSectionMessageView.as_view({"post":"create"})
          ,name="messages")
 ]
