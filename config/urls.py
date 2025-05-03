@@ -29,6 +29,7 @@ urlpatterns += [
     path("api/auth-token/", obtain_auth_token, name="obtain_auth_token"),
     path("api/", include('users.urls')),
     path("api/", include('subjects.urls')),
+    path("api/", include('courses.urls')),
 
 ]
 
