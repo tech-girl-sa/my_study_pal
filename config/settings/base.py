@@ -102,6 +102,7 @@ LOCAL_APPS = [
     "my_study_pal.main",
     "my_study_pal.subjects",
     "my_study_pal.courses",
+    "my_study_pal.ai_utilities",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
