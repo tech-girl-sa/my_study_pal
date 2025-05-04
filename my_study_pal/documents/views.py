@@ -1,15 +1,33 @@
 import os
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, filters
+from django_filters import rest_framework as dfilters
 from my_study_pal.courses.models import Course
 from my_study_pal.documents.models import Document
 from my_study_pal.documents.serializers import DocumentsSerializer, DocumentUploadSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+
+from my_study_pal.subjects.models import Subject
+
+
+class DocumentFilter(dfilters.FilterSet):
+    course = dfilters.ModelChoiceFilter(queryset=Course.objects.all(), label="Course")
+    subject = dfilters.ModelChoiceFilter(queryset=Subject.objects.all(), label="Subject",
+                                         field_name="course__subject")
+
+    class Meta:
+        model = Document
+        fields = [ "course", "subject"]
 
 
 class DocumentsViewset(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = DocumentsSerializer
     queryset = Document.objects.all()
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    ordering_fields = ['title', 'created_at']
+    ordering = ['title']
+    filterset_class = DocumentFilter
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -47,6 +65,21 @@ class DocumentsViewset(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Re
             #TODO add logic to identify/create the course if course id is not provided that will match
             # the case where user uploads the document from documents page
             serializer.save(user=self.request.user)
+
+    @swagger_auto_schema(
+        operation_description="Filter Documents",
+        manual_parameters=[
+            openapi.Parameter(
+                'course', openapi.IN_QUERY, description="Filter by course",
+                type=openapi.TYPE_INTEGER
+            ),
+            openapi.Parameter(
+                'subject', openapi.IN_QUERY, description="Filter by subject", type=openapi.TYPE_INTEGER
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 
