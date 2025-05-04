@@ -30,6 +30,7 @@ urlpatterns += [
     path("api/", include('users.urls')),
     path("api/", include('subjects.urls')),
     path("api/", include('courses.urls')),
+    path("api/", include('documents.urls')),
 
 ]
 
