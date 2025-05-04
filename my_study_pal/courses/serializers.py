@@ -6,7 +6,7 @@ from my_study_pal.courses.models import Course, Section, Message
 class CourseSerializer(ModelSerializer):
     class Meta:
         model = Course
-        fields = ['id','title', 'description', 'tags', 'subject']
+        fields = ['id','title', 'description', 'tags', 'subject', 'document']
 
 
 class SectionSerializer(ModelSerializer):
