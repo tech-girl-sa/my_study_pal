@@ -1,6 +1,5 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-
 from my_study_pal.subjects.models import EntityManager
 
 

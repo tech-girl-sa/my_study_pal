@@ -1,6 +1,8 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+from my_study_pal.documents.models import Document
+
 
 class EntityManager(models.Manager):
     def get_queryset(self):
@@ -26,3 +28,13 @@ class Subject(models.Model):
         """#TODO increament token index when trying to save existing one in DB"""
         self.token = ''.join(char for char in self.title.lower().replace(" ","_") if char.isalnum() or char =="_")
         super().save()
+
+    @property
+    def documents_count(self):
+        return Document.objects.filter(course__in=self.courses.all()).count()
+
+
+    @property
+    def courses_count(self):
+        return self.courses.count()
+
