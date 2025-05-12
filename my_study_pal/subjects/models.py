@@ -1,15 +1,14 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+from my_study_pal.courses.models import TopicsMixin, EntityManager
 from my_study_pal.documents.models import Document
 
 
-class EntityManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_archived=False)
 
 
-class Subject(models.Model):
+
+class Subject(TopicsMixin, models.Model):
     title = models.CharField("Title", max_length=300)
     token = models.CharField("Tokenized Title", max_length=300, unique=True)
     description = models.TextField("Description", max_length=2000, blank=True)
@@ -24,11 +23,6 @@ class Subject(models.Model):
     user = models.ForeignKey("users.User", verbose_name="User", on_delete=models.CASCADE, related_name="subjects")
     objects = EntityManager()
 
-    def save(self, *args, **kwargs):
-        """#TODO increament token index when trying to save existing one in DB"""
-        self.token = ''.join(char for char in self.title.lower().replace(" ","_") if char.isalnum() or char =="_")
-        super().save()
-
     @property
     def documents_count(self):
         return Document.objects.filter(course__in=self.courses.all()).count()
@@ -37,4 +31,9 @@ class Subject(models.Model):
     @property
     def courses_count(self):
         return self.courses.count()
+
+    @property
+    def vector_store_name(self):
+        return "subjects"
+
 

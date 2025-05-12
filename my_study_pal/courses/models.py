@@ -1,9 +1,23 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from my_study_pal.subjects.models import EntityManager
 
 
-class Course(models.Model):
+class EntityManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_archived=False)
+
+
+class TopicsMixin:
+
+    def save(self, *args, **kwargs):
+        from my_study_pal.ai_utilities.vector_store_utils import VectorStoreManager
+        """#TODO increament token index when trying to save existing one in DB"""
+        self.token = ''.join(char for char in self.title.lower().replace(" ","_") if char.isalnum() or char =="_")
+        super().save()
+        VectorStoreManager(self.vector_store_name).add_vector(self)
+
+
+class Course(TopicsMixin, models.Model):
     title = models.CharField("Title", max_length=300)
     token = models.CharField("Tokenized Title", max_length=300, unique=True)
     description = models.TextField("Description", max_length=2000, blank=True)
@@ -18,13 +32,14 @@ class Course(models.Model):
     subject = models.ForeignKey("subjects.Subject", verbose_name="Subject", on_delete=models.CASCADE, related_name="courses")
     objects = EntityManager()
 
-    def save(self, *args, **kwargs):
-        """#TODO increament token index when trying to save existing one in DB"""
-        self.token = ''.join(char for char in self.title.lower().replace(" ","_") if char.isalnum() or char =="_")
-        super().save()
+    @property
+    def vector_store_name(self):
+        return "courses"
 
 
-class Section(models.Model):
+
+
+class Section(TopicsMixin ,models.Model):
     title = models.CharField("Title", max_length=300)
     token = models.CharField("Tokenized Title", max_length=300, unique=True)
     description = models.TextField("Description", max_length=2000, blank=True)
@@ -34,10 +49,11 @@ class Section(models.Model):
     course = models.ForeignKey("Course", verbose_name="Course", on_delete=models.CASCADE, related_name="sections")
     objects = EntityManager()
 
-    def save(self, *args, **kwargs):
-        """#TODO increament token index when trying to save existing one in DB"""
-        self.token = ''.join(char for char in self.title.lower().replace(" ","_") if char.isalnum() or char =="_")
-        super().save()
+    @property
+    def vector_store_name(self):
+        return "sections"
+
+
 
 
 class Message(models.Model):

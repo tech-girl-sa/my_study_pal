@@ -7,6 +7,7 @@ class CourseSerializer(ModelSerializer):
     class Meta:
         model = Course
         fields = ['id','title', 'description', 'tags', 'subject', 'document']
+        read_only_fields = ['document']
 
 
 class SectionSerializer(ModelSerializer):
