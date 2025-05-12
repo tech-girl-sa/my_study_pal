@@ -1,9 +1,19 @@
 volumes:
   my_study_pal_local_postgres_data: {}
   my_study_pal_local_postgres_data_backups: {}
-
+  my_study_pal_local_pgvector_data: {}
+  my_study_pal_local_pgvector_data_backups: {}
 
 services:
+#  ollama:
+#    build:
+#      context: .
+#      dockerfile: ./compose/local/ollama/Dockerfile
+#    container_name: my_study_pal_local_ollama
+#    ports:
+#      - "11434:11434"
+#    restart: unless-stopped
+
   django:
     build:
       context: .
@@ -11,12 +21,15 @@ services:
     image: my_study_pal_local_django
     container_name: my_study_pal_local_django
     depends_on:
+#      - ollama
       - postgres
+      - pgvector
     volumes:
       - .:/app:z
     env_file:
       - ./.envs/.local/.django
       - ./.envs/.local/.postgres
+      - ./.envs/.local/.pgvector
     ports:
       - '8000:8000'
     command: /start
@@ -34,3 +47,18 @@ services:
       - my_study_pal_local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres
+
+  pgvector:
+    build:
+      context: .
+      dockerfile: ./compose/production/pgvector/Dockerfile
+    image: my_study_pal_production_pgvector
+    container_name: my_study_pal_local_pgvector
+    ports:
+      - "6024:5432"
+    volumes:
+      - my_study_pal_local_pgvector_data:/var/lib/postgresql/data
+      - my_study_pal_local_pgvector_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.pgvector
+

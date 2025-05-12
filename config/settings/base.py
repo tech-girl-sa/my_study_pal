@@ -59,6 +59,10 @@ DATABASES = {
         'PORT': env('POSTGRES_PORT', default='5432'),
     }
 }
+PGVECTOR_DB_URL = (
+    f"postgresql+psycopg://{env('PGVECTOR_POSTGRES_USER')}:{env('PGVECTOR_POSTGRES_PASSWORD')}"
+    f"@{env('PGVECTOR_POSTGRES_HOST')}:{env('PGVECTOR_POSTGRES_PORT')}/{env('PGVECTOR_POSTGRES_DB')}"
+)
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
