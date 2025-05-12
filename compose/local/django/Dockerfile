@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
   build-essential \
   # psycopg dependencies
-  libpq-dev
+  libpq-dev\
+  # NumPy/SciPy/Bottleneck dependencies
+  python3-dev
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements .
