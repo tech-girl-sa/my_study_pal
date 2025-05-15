@@ -1,20 +1,15 @@
 from typing import Union
 from langchain_postgres import PGVector
 from django.conf import settings
-from langchain_google_vertexai import VertexAIEmbeddings
 from langchain_core.documents import Document
-from langchain_ollama import OllamaEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 from my_study_pal.courses.models import Course, Section
 from my_study_pal.subjects.models import Subject
 
 
 def create_vector_store():
-    collection_name = "sections"
+    collection_name = "courses"
     connection = settings.PGVECTOR_DB_URL
-    #base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    #embeddings = OllamaEmbeddings(model="llama3", base_url=base_url) consumes a lot of memory requires setting up local server
-    #embeddings = VertexAIEmbeddings(model="text-embedding-004") requires billing
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
     vector_store = PGVector(
         embeddings=embeddings,
@@ -22,20 +17,25 @@ def create_vector_store():
         connection=connection,
         use_jsonb=True,
     )
-    sections = Section.objects.all()
-    section_documents = [
-        Document(page_content=section.title,
-                 metadata={"course_id": section.course.id,
-                           "section_id": section.id,
-                           "user_id": section.course.subject.user.id})
-        for section in sections]
-    vector_store.add_documents(section_documents)
+    instances = Course.objects.all()
+    instances_documents = [
+        Document(page_content=instance.title,
+                 metadata={"subject_id": instance.subject.id,
+                           "instance_id": instance.id,
+                           "user_id": instance.subject.user.id})
+        for instance in instances]
+    vector_store.add_documents(instances_documents)
 
 
 
 class VectorStoreManager():
     connection = settings.PGVECTOR_DB_URL
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+    class_mapping = {
+        Subject().vector_store_name : Subject,
+        Course().vector_store_name : Course,
+        Section().vector_store_name: Section
+    }
 
     def __init__(self, vector_store_name):
         self.vector_store = PGVector(
@@ -44,6 +44,8 @@ class VectorStoreManager():
         connection=self.connection,
         use_jsonb=True,
     )
+        self.instance_class = self.class_mapping[vector_store_name]
+        self.vector_store_name = vector_store_name
 
     def add_vector(self, object:Union[Subject, Course, Section]):
         content = object.title
@@ -51,10 +53,17 @@ class VectorStoreManager():
         self.vector_store.add_documents([Document(page_content=content, metadata=metadata)])
 
     def construct_metadata(self, object: Union[Subject, Course, Section]):
-        if type(object) == Subject:
-            return {"subject_id":object.id, "user_id":object.user.id}
-        elif type(object) == Course:
-            return {"course_id":object.id ,"subject_id": object.subject.id, "user_id": object.subject.user.id}
-        else:
-            return {"section_id": object.id, "course_id": object.course.id, "user_id": object.course.subject.user.id}
+        metadata_mappings = {
+            Subject().vector_store_name: {"instance_id": object.id, "user_id": object.user.id},
+            Course().vector_store_name: {"instance_id": object.id, "subject_id": object.subject.id,
+                                       "user_id": object.subject.user.id},
+            Section().vector_store_name: {"instance_id": object.id, "course_id": object.course.id,
+                                        "user_id": object.course.subject.user.id}
+        }
+        return metadata_mappings[object.vector_store_name]
+
+
+    def get_similar_topics(self, query, k=2):
+        documents = self.vector_store.similarity_search(query=query, k=k)
+        return self.instance_class.objects.filter(id__in=[document.metadata["instance_id"] for document in documents])
 
