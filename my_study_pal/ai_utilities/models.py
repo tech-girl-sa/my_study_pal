@@ -1,10 +1,19 @@
+import os
+
 from django.db import models
-
-
+from google import genai
+from openai import OpenAI, api_key
 
 
 class AiModel(models.Model):
-    name = models.CharField("Name", max_length=300)
+    class AiAgentNameChoices(models.TextChoices):
+         OPEN_AI= "open_ai", "Open AI"
+         GEMINI = "gemini", "Gemini"
+    name = models.CharField("AI Agent Name", max_length=300, choices=AiAgentNameChoices.choices)
+    class AiAgentModelChoices(models.TextChoices):
+         GPT_4O_MINI= "gpt-4o-mini", "gpt-4o-mini"
+         GEMINI_2_FLASH = "gemini-2.0-flash", "gemini-2.0-flash"
+    model = models.CharField("Ai Agent Model", max_length=300, choices=AiAgentModelChoices.choices)
     token = models.CharField("Tokenized Name", max_length=300, unique=True)
     configuration = models.JSONField("Configuration", blank=True, null=True)
     is_active = models.BooleanField(default=True)
@@ -12,15 +21,34 @@ class AiModel(models.Model):
     updated_at = models.DateTimeField("Updated at", auto_now=True)
 
     def save(self, *args, **kwargs):
-        self.token = ''.join(char for char in self.name.lower().replace(" ","_") if char.isalnum() or char =="_")
+        self.token = ''.join(char
+                             for char in f'{self.name}_{self.model.lower().replace("-","_").replace(".", "_")}'
+                             if char.isalnum() or char =="_")
         super().save()
+
+
+    @property
+    def api_key(self):
+        keys_mapping = {
+            self.AiAgentNameChoices.OPEN_AI: "OPENAI_API_KEY",
+            "gemini": "GEMINI_API_KEY"
+        }
+        return os.environ.get(keys_mapping[self.name])
+
+    @property
+    def client(self):
+        clients_mapping = {
+            self.AiAgentNameChoices.OPEN_AI: OpenAI,
+            self.AiAgentNameChoices.GEMINI: genai.Client
+        }
+        return clients_mapping[self.name](api_key= self.api_key)
 
 
 class Settings(models.Model):
     temperature = models.FloatField("Temperature", blank=True)
     ai_model = models.ForeignKey("AiModel", verbose_name="AI Model", on_delete=models.SET_NULL,
                                  related_name="settings", null=True)
-    user = models.ForeignKey("users.User", verbose_name="User", on_delete=models.CASCADE, related_name="settings")
+    user = models.OneToOneField("users.User", verbose_name="User", on_delete=models.CASCADE, related_name="settings")
     created_at = models.DateTimeField("Created at", auto_now_add=True)
     updated_at = models.DateTimeField("Updated at", auto_now=True)
 
