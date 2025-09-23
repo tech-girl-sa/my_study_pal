@@ -22,4 +22,9 @@ class UserInfoViewSet(CreateModelMixin, RetrieveModelMixin,  UpdateModelMixin, G
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-
+    def perform_update(self, serializer):
+        instance =self.get_object()
+        if not instance:
+            serializer.save(user=self.request.user)
+        else:
+            serializer.save()

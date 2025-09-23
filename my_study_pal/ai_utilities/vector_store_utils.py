@@ -3,7 +3,7 @@ from langchain_postgres import PGVector
 from django.conf import settings
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
-from my_study_pal.courses.models import Course, Section
+from my_study_pal.courses.models import Course, Section, Chunk
 from my_study_pal.subjects.models import Subject
 
 
@@ -28,13 +28,14 @@ def create_vector_store():
 
 
 
-class VectorStoreManager():
+class VectorStoreManager:
     connection = settings.PGVECTOR_DB_URL
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
     class_mapping = {
         Subject().vector_store_name : Subject,
         Course().vector_store_name : Course,
-        Section().vector_store_name: Section
+        Section().vector_store_name: Section,
+        Chunk().vector_store_name: Chunk
     }
 
     def __init__(self, vector_store_name):
@@ -47,18 +48,23 @@ class VectorStoreManager():
         self.instance_class = self.class_mapping[vector_store_name]
         self.vector_store_name = vector_store_name
 
-    def add_vector(self, object:Union[Subject, Course, Section]):
-        content = object.title
-        metadata = self.construct_metadata(object)
-        self.vector_store.add_documents([Document(page_content=content, metadata=metadata)])
+    def add_vector(self, object:Union[Subject, Course, Section, Chunk]):
+        if hasattr(object, 'title'):
+            content = object.title
+        else:
+            content = object.content
+        self.vector_store.add_documents([Document(page_content=content, metadata=object.metadata)])
 
-    def construct_metadata(self, object: Union[Subject, Course, Section]):
+    def construct_metadata(self, object: Union[Subject, Course, Section, Chunk]):
         metadata_mappings = {
             Subject().vector_store_name: {"instance_id": object.id, "user_id": object.user.id},
             Course().vector_store_name: {"instance_id": object.id, "subject_id": object.subject.id,
                                        "user_id": object.subject.user.id},
             Section().vector_store_name: {"instance_id": object.id, "course_id": object.course.id,
-                                        "user_id": object.course.subject.user.id}
+                                        "user_id": object.course.subject.user.id},
+            Chunk.vector_store_name: {"instance_id": object.id, "course_id": object.section.course.id,
+                                        "user_id": object.course.subject.user.id, "section_id":object.section.id,
+                                      "document_id":object.course.document.id}
         }
         return metadata_mappings[object.vector_store_name]
 
@@ -67,3 +73,13 @@ class VectorStoreManager():
         documents = self.vector_store.similarity_search(query=query, k=k)
         return self.instance_class.objects.filter(id__in=[document.metadata["instance_id"] for document in documents])
 
+
+    def get_similar_chunks(self, query, document_id, section_id=0, k=5):
+        filters = {"document_id": {"$eq": document_id}}
+        if section_id:
+            filters["section_id"] = {"$eq": section_id}
+        documents = self.vector_store.similarity_search(
+            query=query, k=k,
+            filter= filters
+        )
+        return self.instance_class.objects.filter(id__in=[document.metadata["instance_id"] for document in documents])

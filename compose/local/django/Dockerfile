@@ -13,7 +13,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   # psycopg dependencies
   libpq-dev\
   # NumPy/SciPy/Bottleneck dependencies
-  python3-dev
+  python3-dev \
+
+  libgl1-mesa-glx \
+    libglib2.0-0  \
+    libsm6  \
+    libxrender1 \
+    libxext6 \
+    ffmpeg
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements .

@@ -31,6 +31,8 @@ class CoursesViewset(ModelViewSet):
     filterset_class = CourseFilter
 
     def get_queryset(self, *args, **kwargs):
+        if getattr(self, 'swagger_fake_view', False):
+            return Course.objects.none()
         assert isinstance(self.request.user.id, int)
         return self.queryset.filter(subject__user__id=self.request.user.id)
 

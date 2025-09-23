@@ -36,6 +36,10 @@ class Course(TopicsMixin, models.Model):
     def vector_store_name(self):
         return "courses"
 
+    @property
+    def metadata(self):
+        return {"instance_id": self.id, "subject_id": self.subject.id,
+                                       "user_id": self.subject.user.id}
 
 
 
@@ -52,6 +56,33 @@ class Section(TopicsMixin ,models.Model):
     @property
     def vector_store_name(self):
         return "sections"
+
+    @property
+    def metadata(self):
+        return {"instance_id": self.id, "course_id": self.course.id,
+                                        "user_id": self.course.subject.user.id}
+
+
+class Chunk(models.Model):
+    content = models.TextField("content", max_length=2000, blank=True)
+    created_at = models.DateTimeField("Created at", auto_now_add=True)
+    section = models.ForeignKey("Section", verbose_name="section", on_delete=models.CASCADE, related_name="chunks")
+
+    def save(self, *args, **kwargs):
+        from my_study_pal.ai_utilities.vector_store_utils import VectorStoreManager
+        super().save()
+        VectorStoreManager(self.vector_store_name).add_vector(self)
+
+    @property
+    def vector_store_name(self):
+        return "chunks"
+
+
+    @property
+    def metadata(self):
+        return {"instance_id": self.id, "course_id": self.section.course.id,
+                                        "user_id": self.section.course.subject.user.id, "section_id":self.section.id,
+                                      "document_id":self.section.course.document.id}
 
 
 
