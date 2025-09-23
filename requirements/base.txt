@@ -10,6 +10,7 @@ hiredis==3.1.0  # https://github.com/redis/hiredis-py
 django==4.2.20 # pyup: < 5.2 # https://www.djangoproject.com/
 django-environ==0.12.0  # https://github.com/joke2k/django-environ
 django-model-utils==5.0.0  # https://github.com/jazzband/django-model-utils
+fido2<1.8.0
 django-allauth[mfa]==65.7.0  # https://github.com/pennersr/django-allauth
 django-crispy-forms==2.3  # https://github.com/django-crispy-forms/django-crispy-forms
 crispy-bootstrap5==2025.4  # https://github.com/django-crispy-forms/crispy-bootstrap5
@@ -26,5 +27,13 @@ langchain-postgres ==  0.0.14
 langchain-google-vertexai == 2.0.22
 langchain-ollama == 0.3.2
 langchain-huggingface == 0.2.0
+langchain_community == 0.3.24
+pypdf == 5.5.0
+unstructured[pdf] == 0.17.2
+opencv-python-headless
+llama-parse == 0.6.36
+pdfminer.six
+docling == 2.40.0 #listed for refrence
+langchain_experimental == 0.3.4
 
 

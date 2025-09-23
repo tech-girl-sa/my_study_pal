@@ -36,4 +36,8 @@ class Subject(TopicsMixin, models.Model):
     def vector_store_name(self):
         return "subjects"
 
+    @property
+    def metadata(self):
+        return {"instance_id": self.id, "user_id": self.user.id}
+
 

@@ -16,7 +16,7 @@ class User(AbstractUser):
 class UserInfo(models.Model):
     user = models.OneToOneField("User", verbose_name="User", on_delete=models.CASCADE, related_name="user_info")
     age = models.PositiveIntegerField("How old are you?", blank=True)
-
+    country = models.CharField("User's Country", max_length=200, blank=True)
     class AcademicLevelChoices(models.TextChoices):
         MIDDLE_SCHOOL = "middle_school", "Middle School"
         HIGH_SCHOOL = "high_school", "High School"
