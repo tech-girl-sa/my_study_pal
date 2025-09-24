@@ -88,13 +88,17 @@ class AIAgentClientManager:
             raise ImproperlyConfigured("Wrong usage of parameters.")
 
 
-    def make_call(self, call_parameters:dict):
+    def make_call(self, call_parameters:dict, parsed=True):
         if self.agent.name == AiModel.AiAgentNameChoices.OPEN_AI:
             response = self.client.responses.parse(**call_parameters)
-            return response.output_parsed.dict()
+            if parsed:
+                return response.output_parsed.dict()
+            return response.text
         if self.agent.name == AiModel.AiAgentNameChoices.GEMINI:
             response = self.client.models.generate_content(**call_parameters)
-            return response.parsed.dict()
+            if parsed:
+                return response.parsed.dict()
+            return response.text
 
 
     def build_parameters(self, messages, instructions="", structured_output = None):
@@ -179,9 +183,9 @@ class AIAgentClientManager:
             similar_chunks = get_similar_chunks_data(user_message, document_id, section_id)
             instructions = (f" based on the following informations respond to the users question {similar_chunks}")
         else:
-            instructions = ""
+            instructions = "respond to user's message."
         parameters = self.build_parameters([user_message], instructions=instructions)
-        return self.make_call(parameters)
+        return self.make_call(parameters, parsed=False)
 
 
 

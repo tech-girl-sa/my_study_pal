@@ -4,6 +4,8 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.viewsets import ModelViewSet
 from django_filters import rest_framework as dfilters
+
+from my_study_pal.ai_utilities.ai_agents import AIAgentClientManager
 from my_study_pal.courses.models import Course, Section, Message
 from my_study_pal.courses.serializers import CourseSerializer, SectionSerializer, MessageSerializer, \
     CreateMessageSerializer
@@ -99,12 +101,18 @@ class CreateSectionMessageView(mixins.CreateModelMixin, mixins.ListModelMixin ,v
 
     def get_queryset(self):
         section_id =  self.kwargs["section_id"]
-        return self.queryset.filter(section__id=section_id)
+        return self.queryset.filter(section__id=section_id, user=self.request.user)
 
     def perform_create(self, serializer):
         section = Section.objects.get(id=self.kwargs["section_id"])
-        serializer.save(user= self.request.user, sender= Message.SenderChoices.user,
+        message = serializer.save(user= self.request.user, sender= Message.SenderChoices.user,
                         section= section)
+        model_token = "gemini_gemini_2_0_flash"
+        document = section.course.document
+        document_id =  getattr(document, "id", 0)
+        ai_response = AIAgentClientManager(model_token).get_response_based_on_document(message.content, document_id)
+        Message(content=ai_response, user= self.request.user, sender= Message.SenderChoices.ai_agent,
+                        section= section).save()
 
     #TODO return response of the AI instead of the user message
     # def create(self, request, *args, **kwargs):
