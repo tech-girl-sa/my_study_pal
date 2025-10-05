@@ -99,4 +99,21 @@ class Message(models.Model):
                              blank=True, null=True)
     ai_model = models.ForeignKey("ai_utilities.AiModel", verbose_name="AI Model", on_delete=models.SET_NULL,
                                  related_name="messages", null=True, blank=True)
+    related_message = models.OneToOneField("courses.Message", verbose_name="Related Message",
+                                           on_delete=models.CASCADE, null=True, blank=True, related_name="ai_response")
     created_at = models.DateTimeField("Created at", auto_now_add=True)
+
+    @property
+    def vector_store_name(self):
+        return "messages"
+
+    @property
+    def metadata(self):
+        return {"instance_id": self.id, "sendder": self.sender,
+                "user_id": self.user.id, "ai_model": self.ai_model,
+                "section_id": self.section.id, "course_id": self.section.course.id}
+
+    def save(self, *args, **kwargs):
+        from my_study_pal.ai_utilities.vector_store_utils import VectorStoreManager
+        super().save()
+        VectorStoreManager(self.vector_store_name).add_vector(self)

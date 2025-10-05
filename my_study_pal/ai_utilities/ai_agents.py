@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from django.core.exceptions import ImproperlyConfigured
 from my_study_pal.ai_utilities.models import AiModel
 from my_study_pal.ai_utilities.vector_store_utils import VectorStoreManager
-from my_study_pal.courses.models import Course, Chunk
+from my_study_pal.courses.models import Course, Chunk, Message
 from my_study_pal.subjects.models import Subject
 from google.genai import types
 import os
@@ -61,7 +61,7 @@ def get_similar_chunks_data(query:str, document_id, section_id) -> list:
             A list containing the results.
     """
 
-    chunks = VectorStoreManager(Chunk().vector_store_name).get_similar_chunks(query, document_id, section_id)
+    chunks = VectorStoreManager(Chunk().vector_store_name).get_similar_chunks(query, document_id)
     data = [chunk.content for chunk in chunks]
     return  data
 
@@ -178,16 +178,38 @@ class AIAgentClientManager:
         return self.make_call(parameters)
 
 
-    def get_response_based_on_document(self, user_message, document_id=0, section_id=0):
+    def get_response_based_on_document(self, user_message,user , document_id=0, section_id=0):
         if document_id:
             similar_chunks = get_similar_chunks_data(user_message, document_id, section_id)
             instructions = (f" based on the following informations respond to the users question {similar_chunks}")
         else:
             instructions = "respond to user's message."
+        if section_id:
+            instructions += self.construct_history_prompt(user_message, user, section_id)
+        print(instructions)
         parameters = self.build_parameters([user_message], instructions=instructions)
         return self.make_call(parameters, parsed=False)
 
+    def get_messages_history(self, user, section_id):
+        last_messages =  Message.objects.select_related("related_message").filter( section_id=section_id,
+                                                sender=Message.SenderChoices.user, user=user, ai_response__isnull=False).order_by("created_at")[:10]
+        if last_messages:
+            return [{"user": message.content, "AI": getattr(message.ai_response, "content", "")} for message in last_messages]
+        return []
 
+    def get_similar_messages(self, query, user,  section_id):
+        similar_messages = VectorStoreManager(Message().vector_store_name).get_similar_user_messages(query,user,  section_id)
+        print(similar_messages)
+        return [{"user": message.content, "AI": getattr(message.ai_response, "content", "")} for message in similar_messages]
+
+    def construct_history_prompt(self, query, user, section_id):
+        return (f"Those are the last 20 messages: {self.get_messages_history(user,section_id)} "
+                f"and those messages may or not be relevant to our query: "
+                f"{self.get_similar_messages(query, user,  section_id)}, be interactive with the user based on the history"
+                f"of messages. Inform in case question is repeated twice and that you are"
+                f"going to provide simpler more detailed answers.if it is not clear what is the user referring to assume "
+                f"he is asking about the last ai response. if answer for the question does not "
+                f"exist in the document inform him and answer based on your own knowledge")
 
 
 
