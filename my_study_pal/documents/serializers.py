@@ -5,7 +5,8 @@ from my_study_pal.documents.models import Document
 
 
 class DocumentsSerializer(serializers.ModelSerializer):
-    subject = serializers.PrimaryKeyRelatedField(source='course.subject', read_only=True)
+    subject = serializers.CharField(source='course.subject.title', read_only=True)
+    course = serializers.CharField(source='course.title', read_only=True)
 
     class Meta:
         model = Document
