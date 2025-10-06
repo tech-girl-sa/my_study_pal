@@ -110,7 +110,7 @@ class DocumentProcessor:
         return "\n".join(converted_lines)
 
 
-    def process_document(self,ai_agent_token, course_id):
+    def process_document(self,ai_agent_token, course_id, user_id):
         #TODO add user to document
         sections = self.load_and_split_document()
         title = sections[0].metadata["Header 1"]
@@ -126,20 +126,22 @@ class DocumentProcessor:
         if course_id:
             course = Course.objects.filter(id=course_id).first()
         else:
-            course = Course.objects.filter(title=self.document.title).first()
+            course = Course.objects.filter(title=self.document.title, subject__user_id=user_id).first()
         manager = AIAgentClientManager(ai_agent_token)
         if not course:
             course = Course(title = title)
             extra_data["new_course"] = True
-            suggested_subject = manager.get_course_subject_title(title)
+            suggested_subject = manager.get_course_subject_title(title, user_id)
             if not suggested_subject["existing_subject_id"]:
                 subject = Subject(title= suggested_subject["suggested_subject_title"],
-                                  description=suggested_subject["suggested_subject_description"])
+                                  description=suggested_subject["suggested_subject_description"],
+                                  user_id=user_id)
                 subject.save()
                 extra_data["new_subject_title"]  = subject.title
                 course.subject = subject
             else:
                 course.subject = Subject.objects.filter(id=suggested_subject["existing_subject_id"]).first()
+                print(suggested_subject["existing_subject_id"], course.id)
                 extra_data["existing_subject_title"]  = course.subject.title
             course.save()
         else:

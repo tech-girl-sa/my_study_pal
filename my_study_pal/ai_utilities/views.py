@@ -13,6 +13,7 @@ class ClassifyMessage(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         ai_model = request.user.settings.ai_model
         user_question = serializer.validated_data['user_question']
-        classification_data = AIAgentClientManager(ai_agent=ai_model).get_massage_classification_data(user_question)
+        classification_data = AIAgentClientManager(ai_agent=ai_model).get_massage_classification_data(user_question,
+                                                                                                      self.request.user.id)
         return Response(classification_data)
 

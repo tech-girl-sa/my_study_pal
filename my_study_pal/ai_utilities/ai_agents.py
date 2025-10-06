@@ -6,6 +6,7 @@ from my_study_pal.courses.models import Course, Chunk, Message
 from my_study_pal.subjects.models import Subject
 from google.genai import types
 import os
+from typing import Optional
 
 
 
@@ -22,12 +23,12 @@ class QuestionOrganizer(BaseModel):
     suggested_section_title: str
 
 class CourseOrganizer(BaseModel):
-    existing_subject_id: int
-    suggested_subject_title: str
-    suggested_subject_description: str
+    existing_subject_id: Optional[int] = None
+    suggested_subject_title: Optional[str] = None
+    suggested_subject_description: Optional[str] = None
 
 
-def get_current_sections_structures(query:str) -> list:
+def get_current_sections_structures(query:str, user_id) -> list:
     """Get subjects/courses and sections structure with titles along with their ids.
         A filtering phase is performed on topics using similarity search to avoid
         overloading the prompt with unnecessary data.
@@ -37,8 +38,8 @@ def get_current_sections_structures(query:str) -> list:
             A list containing the results.
     """
 
-    subjects = VectorStoreManager(Subject().vector_store_name).get_similar_topics(query)
-    courses = VectorStoreManager(Course().vector_store_name).get_similar_topics(query)
+    subjects = VectorStoreManager(Subject().vector_store_name).get_similar_topics(query, user_id)
+    courses = VectorStoreManager(Course().vector_store_name).get_similar_topics(query, user_id)
     data = [
         {"subject_id":subject.id,
          "subject_title": subject.title,
@@ -139,7 +140,7 @@ class AIAgentClientManager:
             parameters.update(config=types.GenerateContentConfig(**config_params))
         return parameters
 
-    def get_massage_classification_data(self, user_message):
+    def get_massage_classification_data(self, user_message, user_id):
         topics_structure = get_current_sections_structures(user_message)
         instructions = ("you are an assistant your role is to help the user identify where to look for the answer "
                         "to his question in the database."
@@ -157,8 +158,8 @@ class AIAgentClientManager:
                                            structured_output=QuestionOrganizer)
         return self.make_call(parameters)
 
-    def get_course_subject_title(self, course_title):
-        subjects = VectorStoreManager(Subject().vector_store_name).get_similar_topics(course_title)
+    def get_course_subject_title(self, course_title, user_id):
+        subjects = VectorStoreManager(Subject().vector_store_name).get_similar_topics(course_title, user_id)
         data = [
             {"subject_id": subject.id,
              "subject_title": subject.title,
@@ -167,9 +168,10 @@ class AIAgentClientManager:
         message = ("You are responsible for managing course creation in a study helping app. "
                    f"A new course titled {course_title} needs to be categorized."
                    f"list of existing subjects currently existing in db {data}"
-                    "If the course clearly belongs semantically to one of the existing subjects, return its existing_subject_id."
+                    "If the course clearly belongs semantically to one of the existing subjects exclusively from the list, "
+                   "return its id in existing_subject_id."
                     "If none of the existing subjects are a good fit—due to language, topic, "
-                   "or academic focus—then suggest a new subject by providing a suggested_subject_title "
+                   "or academic focus—then do not return an id rather suggest a new subject by providing a suggested_subject_title "
                    "and a short description. existing_subject_id should be empty in that case"
                     "Do not pick a subject that refers to a different language or unrelated field."
                    "ex: spanish related courses cannot be part of english related subjects")
@@ -193,6 +195,7 @@ class AIAgentClientManager:
     def get_messages_history(self, user, section_id):
         last_messages =  Message.objects.select_related("related_message").filter( section_id=section_id,
                                                 sender=Message.SenderChoices.user, user=user, ai_response__isnull=False).order_by("created_at")[:10]
+        print(user,section_id, last_messages)
         if last_messages:
             return [{"user": message.content, "AI": getattr(message.ai_response, "content", "")} for message in last_messages]
         return []

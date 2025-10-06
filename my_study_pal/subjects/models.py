@@ -10,7 +10,7 @@ from my_study_pal.documents.models import Document
 
 class Subject(TopicsMixin, models.Model):
     title = models.CharField("Title", max_length=300)
-    token = models.CharField("Tokenized Title", max_length=300, unique=True)
+    token = models.CharField("Tokenized Title", max_length=300)
     description = models.TextField("Description", max_length=2000, blank=True)
     tags = ArrayField(
         models.CharField(max_length=100),
@@ -41,3 +41,5 @@ class Subject(TopicsMixin, models.Model):
         return {"instance_id": self.id, "user_id": self.user.id}
 
 
+    class Meta:
+        unique_together = ("user", "token")

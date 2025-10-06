@@ -101,7 +101,7 @@ class CreateSectionMessageView(mixins.CreateModelMixin, mixins.ListModelMixin ,v
 
     def get_queryset(self):
         section_id =  self.kwargs["section_id"]
-        return self.queryset.filter(section__id=section_id, user=self.request.user)
+        return self.queryset.filter(section__id=section_id, user=self.request.user).order_by("created_at")
 
     def perform_create(self, serializer):
         section = Section.objects.get(id=self.kwargs["section_id"])
@@ -110,9 +110,10 @@ class CreateSectionMessageView(mixins.CreateModelMixin, mixins.ListModelMixin ,v
         model_token = "gemini_gemini_2_0_flash"
         document = section.course.document
         document_id =  getattr(document, "id", 0)
-        ai_response = AIAgentClientManager(model_token).get_response_based_on_document(message.content, document_id)
+        ai_response = AIAgentClientManager(model_token).get_response_based_on_document(
+            message.content, user=self.request.user,document_id=document_id, section_id=section.id)
         Message(content=ai_response, user= self.request.user, sender= Message.SenderChoices.ai_agent,
-                        section= section).save()
+                        section= section, related_message=message).save()
 
     #TODO return response of the AI instead of the user message
     # def create(self, request, *args, **kwargs):

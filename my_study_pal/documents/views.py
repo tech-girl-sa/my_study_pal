@@ -68,7 +68,7 @@ class DocumentsViewset(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Re
         filename = os.path.splitext(file.name)[0]
         document = serializer.save(user=self.request.user, title=filename)
         ai_agent_token = "gemini_gemini_2_0_flash"
-        self.extra_data = DocumentProcessor(document).process_document(ai_agent_token, course_id)
+        self.extra_data = DocumentProcessor(document).process_document(ai_agent_token, course_id, self.request.user.id)
 
     @swagger_auto_schema(
         operation_description="Filter Documents",

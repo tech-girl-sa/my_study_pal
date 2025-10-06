@@ -57,9 +57,10 @@ class VectorStoreManager:
         self.vector_store.add_documents([Document(page_content=content, metadata=object.metadata)])
 
 
-    def get_similar_topics(self, query, k=2):
+    def get_similar_topics(self, query, user_id, k=2):
         documents = self.vector_store.similarity_search(query=query, k=k)
-        return self.instance_class.objects.filter(id__in=[document.metadata["instance_id"] for document in documents])
+        return self.instance_class.objects.filter(id__in=[document.metadata["instance_id"] for document in documents]
+                                                  , user__id=user_id)
 
 
     def get_similar_chunks(self, query, document_id, section_id=0, k=5):

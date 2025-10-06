@@ -19,7 +19,7 @@ class TopicsMixin:
 
 class Course(TopicsMixin, models.Model):
     title = models.CharField("Title", max_length=300)
-    token = models.CharField("Tokenized Title", max_length=300, unique=True)
+    token = models.CharField("Tokenized Title", max_length=300)
     description = models.TextField("Description", max_length=2000, blank=True)
     tags = ArrayField(
         models.CharField(max_length=100),
@@ -41,11 +41,14 @@ class Course(TopicsMixin, models.Model):
         return {"instance_id": self.id, "subject_id": self.subject.id,
                                        "user_id": self.subject.user.id}
 
+    class Meta:
+        unique_together = ("subject", "token")
+
 
 
 class Section(TopicsMixin ,models.Model):
     title = models.CharField("Title", max_length=300)
-    token = models.CharField("Tokenized Title", max_length=300, unique=True)
+    token = models.CharField("Tokenized Title", max_length=300)
     description = models.TextField("Description", max_length=2000, blank=True)
     is_archived = models.BooleanField(default=False)
     created_at = models.DateTimeField("Created at", auto_now_add=True)
@@ -61,6 +64,9 @@ class Section(TopicsMixin ,models.Model):
     def metadata(self):
         return {"instance_id": self.id, "course_id": self.course.id,
                                         "user_id": self.course.subject.user.id}
+
+    class Meta:
+        unique_together = ("course", "token")
 
 
 class Chunk(models.Model):
