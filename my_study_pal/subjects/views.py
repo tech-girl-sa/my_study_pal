@@ -2,11 +2,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters
+from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 from my_study_pal.subjects.models import Subject
 from my_study_pal.subjects.serializers import SubjectSerializer
 from django_filters import rest_framework as dfilters
 from django.db.models import Q
+from rest_framework.response import Response
 
 
 
@@ -14,7 +16,7 @@ class ArrayContainsFilter(dfilters.Filter):
 
     def filter(self, qs, value):
         if value:
-            items = value.split(",")
+            items = [item.lower() for item in value.split(",")]
             lookup = f"{self.field_name}__contains"
             query = Q(**{lookup:[items[0]]})
             for item in items[1:]:
@@ -62,4 +64,10 @@ class SubjectsViewset(ModelViewSet):
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @action( detail=False,methods=["get"])
+    def tags(self,request, *args, **kwargs ):
+        subjects = self.get_queryset(*args, **kwargs)
+        tags = set([tag.lower() for subject in subjects for tag in subject.tags ])
+        return Response(tags)
 

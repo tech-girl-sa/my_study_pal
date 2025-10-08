@@ -70,6 +70,12 @@ class CoursesViewset(ModelViewSet):
             return response.Response(serializer.data)
         return response.Response({"detail": "No sections in this course."}, status=404)
 
+    @decorators.action(detail=False, methods=["get"])
+    def tags(self, request, *args, **kwargs):
+        courses = self.get_queryset(*args, **kwargs)
+        tags = set([tag.lower() for course in courses for tag in course.tags])
+        return response.Response(tags)
+
 
 
 
