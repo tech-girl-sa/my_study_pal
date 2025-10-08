@@ -27,9 +27,10 @@ class CourseFilter(dfilters.FilterSet):
 class CoursesViewset(ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
-    filter_backends = [ DjangoFilterBackend, filters.OrderingFilter]
+    filter_backends = [ DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['title', 'created_at']
     ordering = ['title']
+    search_fields = ['title', 'description']
     filterset_class = CourseFilter
 
     def get_queryset(self, *args, **kwargs):

@@ -34,9 +34,10 @@ class SubjectFilter(dfilters.FilterSet):
 class SubjectsViewset(ModelViewSet):
     serializer_class = SubjectSerializer
     queryset = Subject.objects.all()
-    filter_backends = [ DjangoFilterBackend, filters.OrderingFilter]
-    ordering_fields = ['title', 'date_created']
+    filter_backends = [ DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['title', 'created_at']
     ordering = ['title']
+    search_fields = ['title', 'description']
     filterset_class = SubjectFilter
 
     def get_queryset(self, *args, **kwargs):
