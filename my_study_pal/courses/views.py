@@ -4,7 +4,6 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.viewsets import ModelViewSet
 from django_filters import rest_framework as dfilters
-
 from my_study_pal.ai_utilities.ai_agents import AIAgentClientManager
 from my_study_pal.courses.models import Course, Section, Message
 from my_study_pal.courses.serializers import CourseSerializer, SectionSerializer, MessageSerializer, \
@@ -75,6 +74,13 @@ class CoursesViewset(ModelViewSet):
         courses = self.get_queryset(*args, **kwargs)
         tags = set([tag.lower() for course in courses for tag in course.tags])
         return response.Response(tags)
+
+    @decorators.action(detail=False, methods=["get"])
+    def subject_choices(self, request, *args, **kwargs):
+        courses = self.get_queryset(*args, **kwargs)
+        subjects = Subject.objects.filter(id__in=set([course.subject.id for course in courses]))
+        subjects_data = [{"key":subject.id, "label":subject.title } for subject in subjects]
+        return response.Response(subjects_data)
 
 
 
