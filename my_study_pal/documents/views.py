@@ -1,7 +1,7 @@
 import os
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets, mixins, filters
+from rest_framework import viewsets, mixins, filters, decorators, response
 from django_filters import rest_framework as dfilters
 from my_study_pal.courses.models import Course
 from my_study_pal.documents.document_processing import DocumentProcessor
@@ -86,6 +86,14 @@ class DocumentsViewset(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Re
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    @decorators.action(detail=False, methods=["get"])
+    def filters_choices(self, request, *args, **kwargs):
+        documents = self.get_queryset(*args, **kwargs)
+        courses = Course.objects.filter(id__in=set([document.course.id for document in documents]))
+        subjects = Subject.objects.filter(id__in=set([course.subject.id for course in courses]))
+        courses_data = [{"key": course.id, "label": course.title} for course in courses]
+        subjects_data = [{"key": subject.id, "label": subject.title} for subject in subjects]
+        return response.Response({"courses":courses_data, "subjects":subjects_data})
 
 
 
