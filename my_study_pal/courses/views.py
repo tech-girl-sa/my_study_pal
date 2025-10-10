@@ -71,7 +71,10 @@ class CoursesViewset(ModelViewSet):
 
     @decorators.action(detail=False, methods=["get"])
     def tags(self, request, *args, **kwargs):
+        subject_id = request.query_params.get('subject')
         courses = self.get_queryset(*args, **kwargs)
+        if subject_id:
+            courses = self.get_queryset(*args, **kwargs).filter(subject__id=subject_id)
         tags = set([tag.lower() for course in courses for tag in course.tags])
         return response.Response(tags)
 
