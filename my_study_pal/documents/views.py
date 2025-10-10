@@ -25,9 +25,10 @@ class DocumentFilter(dfilters.FilterSet):
 class DocumentsViewset(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = DocumentsSerializer
     queryset = Document.objects.all()
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter,filters.SearchFilter]
     ordering_fields = ['title', 'created_at']
     ordering = ['title']
+    search_fields = ['title']
     filterset_class = DocumentFilter
 
     def get_serializer_class(self):
