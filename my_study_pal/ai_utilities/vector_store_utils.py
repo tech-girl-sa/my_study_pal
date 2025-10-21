@@ -63,9 +63,7 @@ class VectorStoreManager:
             k=1000,
             filter=filters
         )
-        print(documents)
         ids = [document.id for document in documents]
-        print(ids)
         self.vector_store.delete(ids)
 
 
