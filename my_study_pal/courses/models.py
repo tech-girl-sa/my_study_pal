@@ -123,3 +123,5 @@ class Message(models.Model):
         from my_study_pal.ai_utilities.vector_store_utils import VectorStoreManager
         super().save()
         VectorStoreManager(self.vector_store_name).add_vector(self)
+
+

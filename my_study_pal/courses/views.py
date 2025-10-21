@@ -38,9 +38,6 @@ class CoursesViewset(ModelViewSet):
         assert isinstance(self.request.user.id, int)
         return self.queryset.filter(subject__user__id=self.request.user.id)
 
-    def perform_destroy(self, instance):
-        instance.is_archived = True
-        instance.save()
 
     @swagger_auto_schema(
         operation_description="Filter Courses",
@@ -98,9 +95,6 @@ class SectionsViewset(
     serializer_class = SectionSerializer
     queryset = Section.objects.all()
 
-    def perform_destroy(self, instance):
-        instance.is_archived = True
-        instance.save()
 
 
 

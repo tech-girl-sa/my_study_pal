@@ -56,6 +56,18 @@ class VectorStoreManager:
             content = object.content
         self.vector_store.add_documents([Document(page_content=content, metadata=object.metadata)])
 
+    def delete_vectors(self, ids:list[int]):
+        filters = {"instance_id": {"$in": ids}}
+        documents = self.vector_store.similarity_search(
+            query="",
+            k=1000,
+            filter=filters
+        )
+        print(documents)
+        ids = [document.id for document in documents]
+        print(ids)
+        self.vector_store.delete(ids)
+
 
     def get_similar_topics(self, query, user_id, k=2):
         documents = self.vector_store.similarity_search(query=query, k=k)

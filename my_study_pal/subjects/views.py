@@ -49,9 +49,6 @@ class SubjectsViewset(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    def perform_destroy(self, instance):
-        instance.is_archived = True
-        instance.save()
 
     @swagger_auto_schema(
         operation_description="Filter subjects by tags",
