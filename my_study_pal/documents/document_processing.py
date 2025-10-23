@@ -29,6 +29,15 @@ def get_document_full_path(document: Document):
     file_path = urllib.parse.urljoin(dir_path, document.file.path)
     return  file_path
 
+def ensure_punkt_downloaded():
+    """Download punkt only once, when actually needed."""
+    if not hasattr(ensure_punkt_downloaded, "_done"):
+        try:
+            nltk.data.find("tokenizers/punkt")
+        except LookupError:
+            nltk.download("punkt", quiet=True)
+        ensure_punkt_downloaded._done = True
+
 
 class DocumentProcessor:
     headers_to_split_on = [
@@ -78,6 +87,7 @@ class DocumentProcessor:
             "top_biggest_three": sorted(set(font_sizes),reverse=True)[:3],
             "lines" : list( zip(text_lines, font_sizes, is_multiple)),
         }
+        print(font_size_info)
         return font_size_info
 
     def is_header(self,line):
@@ -87,7 +97,8 @@ class DocumentProcessor:
             r'^[A-Z][\)\.\-: ]+\s*[A-Z].*$',  # Alpha
             r'^[A-Z]\d+[\)\.\-: ]+\s*[A-Z].*$',  # A1. Title
             r'^[A-Z0-9\s\-:]{5,}$',  # ALL CAPS
-            r'^[A-Z][a-z]+.*:\s*$'  # Title with colon
+            r'^[A-Z][a-z]+.*:\s*$',  # Title with colon
+            r'^[A-Za-z]+\s+((\d+([.\-]\d+)*)|([A-Za-z]+)|([IVXLCDMivxlcdm]+))[\.\-:]?\s*.*$', # Word + number letter or roman (Chapter 1, Part 2, Lesson 3)
         ]
         return any(re.match(p, line.strip()) for p in header_patterns)
 
@@ -95,6 +106,7 @@ class DocumentProcessor:
     def get_title_and_headers(self, pdf_lines):
         title = [line[0] for line in pdf_lines["lines"] if line[1]==pdf_lines["top_biggest_three"][0]][0]
         headers = [line[0] for line in pdf_lines["lines"] if line[1]==pdf_lines["top_biggest_three"][1] and self.is_header(line[0])]
+        print(title,headers)
         return title, headers
 
     def convert_to_markdown(self, pdf_lines):
@@ -113,7 +125,8 @@ class DocumentProcessor:
     def process_document(self,ai_agent_token, course_id, user_id):
         #TODO add user to document
         sections = self.load_and_split_document()
-        title = sections[0].metadata["Header 1"]
+        print(self.document)
+        title = sections[0].metadata.get("Header 1")
         self.document.title = title
         #course and subject creation TODO subject affiliation will be based on user choice
         extra_data={
@@ -158,6 +171,7 @@ class DocumentProcessor:
 
     def save_sections_and_chunks(self, sections, course):
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+        ensure_punkt_downloaded()
         for section in sections:
             section_title = section.metadata.get("Header 2", "Introduction")
             section_instance = Section(title=section_title, course=course)
@@ -179,7 +193,6 @@ class DocumentProcessor:
 
 
     def get_tokens_number(self, text):
-        nltk.download('punkt_tab')
         text_no_punct = re.sub(r'[^\w\s]', '', text.lower())
         words = nltk.word_tokenize(text_no_punct)
         return len(words)
