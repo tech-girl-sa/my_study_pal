@@ -118,8 +118,11 @@ class CreateSectionMessageView(mixins.CreateModelMixin, mixins.ListModelMixin ,v
         message = serializer.save(user= self.request.user, sender= Message.SenderChoices.user,
                         section= section)
         model_token = "gemini_gemini_2_0_flash"
-        document = section.course.document
-        document_id =  getattr(document, "id", 0)
+        document = getattr(section.course,"document", None)
+        if document:
+            document_id =  getattr(document, "id", 0)
+        else:
+            document_id=0
         ai_response = AIAgentClientManager(model_token).get_response_based_on_document(
             message.content, user=self.request.user,document_id=document_id, section_id=section.id)
         Message(content=ai_response, user= self.request.user, sender= Message.SenderChoices.ai_agent,
