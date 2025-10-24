@@ -3,6 +3,9 @@
 Study Pal is a smart, AI-powered educational platform designed to help learners organize, understand, and interact with their study materials.
 It adapts dynamically to each user’s education level, study goals, and learning needs — providing a personalized and efficient study experience.
 
+![StudyPal Logo](./my_study_pal/static/images/main/logo.png)
+
+
 # Features
 
 ## 👤 User & Onboarding
