@@ -1,5 +1,6 @@
 import os
 
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from google import genai
 from openai import OpenAI, api_key
@@ -48,6 +49,41 @@ class Settings(models.Model):
     temperature = models.FloatField("Temperature", blank=True)
     ai_model = models.ForeignKey("AiModel", verbose_name="AI Model", on_delete=models.SET_NULL,
                                  related_name="settings", null=True)
+
+    class LanguageChoices(models.TextChoices):
+        ENGLISH = "en", "English"
+        ARABIC = "ar", "Arabic"
+        FRENCH = "fr", "French"
+        GERMAN = "de", "German"
+        SPANISH = "es", "Spanish"
+        ITALIAN = "it", "Italian"
+        PORTUGUESE = "pt", "Portuguese"
+        RUSSIAN = "ru", "Russian"
+        CHINESE_SIMPLIFIED = "zh", "Chinese (Simplified)"
+        JAPANESE = "ja", "Japanese"
+        KOREAN = "ko", "Korean"
+        DUTCH = "nl", "Dutch"
+        SWEDISH = "sv", "Swedish"
+        TURKISH = "tr", "Turkish"
+        POLISH = "pl", "Polish"
+        HINDI = "hi", "Hindi"
+        BENGALI = "bn", "Bengali"
+        UKRAINIAN = "uk", "Ukrainian"
+        GREEK = "el", "Greek"
+        HEBREW = "he", "Hebrew"
+    translation_language =  models.CharField(
+    max_length=5,
+    choices=LanguageChoices.choices,
+    default=LanguageChoices.ENGLISH
+    )
+    temperature = models.FloatField(
+        default=0.7,
+        validators=[
+            MinValueValidator(0.0),
+            MaxValueValidator(1.0)
+        ],
+        help_text="Controls AI creativity: 0 = focused/deterministic, 1 = highly creative."
+    )
     user = models.OneToOneField("users.User", verbose_name="User", on_delete=models.CASCADE, related_name="settings")
     created_at = models.DateTimeField("Created at", auto_now_add=True)
     updated_at = models.DateTimeField("Updated at", auto_now=True)

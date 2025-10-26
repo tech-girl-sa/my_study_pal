@@ -128,13 +128,7 @@ class CreateSectionMessageView(mixins.CreateModelMixin, mixins.ListModelMixin ,v
         Message(content=ai_response, user= self.request.user, sender= Message.SenderChoices.ai_agent,
                         section= section, related_message=message).save()
 
-    #TODO return response of the AI instead of the user message
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     headers = self.get_success_headers(serializer.data)
-    #     return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 def identify_section():
