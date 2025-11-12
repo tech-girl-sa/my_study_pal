@@ -4,6 +4,8 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.viewsets import ModelViewSet
 from django_filters import rest_framework as dfilters
+
+from my_study_pal.ai_utilities.agentic_flow import study_pal_graph, StudyPalState
 from my_study_pal.ai_utilities.ai_agents import AIAgentClientManager
 from my_study_pal.courses.models import Course, Section, Message
 from my_study_pal.courses.serializers import CourseSerializer, SectionSerializer, MessageSerializer, \
@@ -115,17 +117,17 @@ class CreateSectionMessageView(mixins.CreateModelMixin, mixins.ListModelMixin ,v
 
     def perform_create(self, serializer):
         section = Section.objects.get(id=self.kwargs["section_id"])
+        course = section.course
         message = serializer.save(user= self.request.user, sender= Message.SenderChoices.user,
                         section= section)
-        model_token = "gemini_gemini_2_0_flash"
-        document = getattr(section.course,"document", None)
-        if document:
-            document_id =  getattr(document, "id", 0)
-        else:
-            document_id=0
-        ai_response = AIAgentClientManager(model_token).get_response_based_on_document(
-            message.content, user=self.request.user,document_id=document_id, section_id=section.id)
-        Message(content=ai_response, user= self.request.user, sender= Message.SenderChoices.ai_agent,
+        state = StudyPalState(
+            user_input=message.content,
+            course_id=course.id,
+            section_id=section.id,
+            user_id=self.request.user.id
+        )
+        final_state: StudyPalState = study_pal_graph.invoke(state)
+        Message(content=final_state['llm_response'], user= self.request.user, sender= Message.SenderChoices.ai_agent,
                         section= section, related_message=message).save()
 
 

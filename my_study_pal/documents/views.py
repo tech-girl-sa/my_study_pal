@@ -68,7 +68,7 @@ class DocumentsViewset(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Re
         file = self.request.data.get("file", None)
         filename = os.path.splitext(file.name)[0]
         document = serializer.save(user=self.request.user, title=filename)
-        ai_agent_token = "open_ai_gpt_4o_mini"
+        ai_agent_token = self.request.user.settings.ai_model.token
         self.extra_data = DocumentProcessor(document).process_document(ai_agent_token, course_id, self.request.user.id)
 
     @swagger_auto_schema(
