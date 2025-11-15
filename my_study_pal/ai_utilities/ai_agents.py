@@ -27,6 +27,14 @@ class CourseOrganizer(BaseModel):
     suggested_subject_title: Optional[str] = None
     suggested_subject_description: Optional[str] = None
 
+class QuestionWithinCourseOrganizer(BaseModel):
+    relevant: bool
+    question_scope: str
+    question_action: str
+
+class retrieval_mode(BaseModel):
+    retrieval_mode: str
+
 
 def get_current_sections_structures(query:str, user_id) -> list:
     """Get subjects/courses and sections structure with titles along with their ids.
@@ -179,11 +187,36 @@ class AIAgentClientManager:
         parameters = self.build_parameters([message], structured_output=CourseOrganizer)
         return self.make_call(parameters)
 
+    def get_question_scope(self, course, user_query):
 
-    def get_response_based_on_document(self, user_message,user , document_id=0, section_id=0):
-        if document_id:
-            similar_chunks = get_similar_chunks_data(user_message, document_id, section_id)
-            instructions = (f" based on the following informations respond to the users question {similar_chunks}")
+        message = ("You are responsible for detecting the scope of user's question in a study helping app. "
+                   f"the course that the user is asking about is named {course.title} ({course.description}), "
+                   f"if the question is irrelevant to the course set relevant to false else to true. "
+                   f"If the user is asking to perform an action like summarizing,translating or explaining "
+                   f"the current section itself set the question_scope to section, if the question requires"
+                   f"an action for the whole course set the question_scope to whole_course. else set it to similarity_search."
+                   f"set question_action according to the action the user wants to perform.Possible values are:"
+                   f"summarize, translate, explain_more or respond")
+
+        parameters = self.build_parameters([user_query],instructions=message, structured_output=QuestionWithinCourseOrganizer)
+        return self.make_call(parameters)
+
+    def get_retrieval_mode(self, docs, user_query):
+
+        message = (f"are the following information {docs} relevant to answer the user questions "
+                   f"if yes set retrieval_mode to retrieval. if no and a web search is needed (set "
+                   f"it to web) if you can answer it without a search (set it to llm) ")
+
+        parameters = self.build_parameters([user_query], instructions=message,
+                                           structured_output=retrieval_mode)
+        return self.make_call(parameters)
+
+
+    def get_response_based_on_documents(self, user_message,user , documents, retrieval_mode, section_id=0):
+        if retrieval_mode=="retrieval":
+            instructions = (f" based on the following informations respond to the users question {documents}")
+        elif retrieval_mode=="web":
+            instructions = (f"A web search is performed to answer this question here are the search results {documents}")
         else:
             instructions = "respond to user's message."
         if section_id:
@@ -208,11 +241,26 @@ class AIAgentClientManager:
     def construct_history_prompt(self, query, user, section_id):
         return (f"Those are the last 20 messages: {self.get_messages_history(user,section_id)} "
                 f"and those messages may or not be relevant to our query: "
-                f"{self.get_similar_messages(query, user,  section_id)}, be interactive with the user based on the history"
-                f"of messages. Inform in case question is repeated twice and that you are"
-                f"going to provide simpler more detailed answers.if it is not clear what is the user referring to assume "
-                f"he is asking about the last ai response. if answer for the question does not "
-                f"exist in the document inform him and answer based on your own knowledge")
+                f"{self.get_similar_messages(query, user,  section_id)}, Inform the user in case question is repeated and "
+                f"that you are going to provide simpler more detailed answers."
+                f"if it is not clear what is the user referring to assume "
+                f"he is asking about the last ai response.")
+
+    def summarize(self, user_message, scope , documents):
+        instructions = (f" summarize the following {scope}: {documents} taking into account the users request")
+        parameters = self.build_parameters([user_message], instructions=instructions)
+        return self.make_call(parameters, parsed=False)
+
+    def translate(self, user_message, scope , documents, language):
+        instructions = (f" translate the following {scope}: {documents}. if the user didn't specify a language to translate"
+                        f"translate to {language}")
+        parameters = self.build_parameters([user_message], instructions=instructions)
+        return self.make_call(parameters, parsed=False)
+
+    def explain_more(self, user_message, scope, documents):
+        instructions = (f" explain more the following {scope}: {documents} taking into account the users request")
+        parameters = self.build_parameters([user_message], instructions=instructions)
+        return self.make_call(parameters, parsed=False)
 
 
 
