@@ -9,18 +9,13 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from dj_rest_auth.registration.views import RegisterView
+from django.conf.urls.static import static
 
 
-urlpatterns = [
-    # Django Admin, use {% url 'admin:index' %}
-    path(settings.ADMIN_URL, admin.site.urls),
-    path("main/", include("my_study_pal.main.urls", namespace="main")),
-    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-]
 
 
 # API URLS
-urlpatterns += [
+urlpatterns = [
     # API base url
     path("api/", include("config.api_router")),
     # DRF auth token
@@ -33,7 +28,7 @@ urlpatterns += [
     path("api/", include('documents.urls')),
     path("api/", include('ai_utilities.urls')),
 
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

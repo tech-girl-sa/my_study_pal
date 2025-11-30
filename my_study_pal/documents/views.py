@@ -64,7 +64,7 @@ class DocumentsViewset(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Re
 
 
     def perform_create(self, serializer):
-        course_id = self.request.query_params.get('course_id', None)
+        course_id = self.request.query_params.get('course', None)
         file = self.request.data.get("file", None)
         filename = os.path.splitext(file.name)[0]
         document = serializer.save(user=self.request.user, title=filename)
