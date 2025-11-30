@@ -17,6 +17,7 @@ from langchain_experimental.text_splitter import SemanticChunker
 from docling.document_converter import DocumentConverter
 from langchain_huggingface import HuggingFaceEmbeddings
 import math
+from pdfminer.layout import LTTextLineHorizontal
 from my_study_pal.subjects.models import Subject
 
 CLOUDE_KEY = os.environ.get('CLAUDE_API_KEY')
@@ -38,6 +39,16 @@ def ensure_punkt_downloaded():
             nltk.download("punkt", quiet=True)
         ensure_punkt_downloaded._done = True
 
+def ensure_punkt_tab_downloaded():
+    if getattr(ensure_punkt_tab_downloaded, "_done", False):
+        return
+    import nltk
+    try:
+        nltk.data.find("tokenizers/punkt_tab")
+    except LookupError:
+        nltk.download("punkt_tab", quiet=True)
+    ensure_punkt_tab_downloaded._done = True
+
 
 class DocumentProcessor:
     headers_to_split_on = [
@@ -53,6 +64,7 @@ class DocumentProcessor:
         lines = self.extract_text_with_font_info()
         text = self.convert_to_markdown(lines)
         docs = self.split_document(text)
+        docs=[doc for doc in docs if doc.metadata]
         return docs
 
 
@@ -70,7 +82,7 @@ class DocumentProcessor:
         ]
         font_sizes=[]
         is_multiple = []
-        element_lines= [line for text in text_elements for line in text if line.get_text().strip()]
+        element_lines= [line for text in text_elements for line in text if isinstance(line, LTTextLineHorizontal) and line.get_text().strip()]
         text_lines = [line.get_text().strip() for line in element_lines]
         for line in element_lines:
             first_size = 0
@@ -106,6 +118,9 @@ class DocumentProcessor:
     def get_title_and_headers(self, pdf_lines):
         title = [line[0] for line in pdf_lines["lines"] if line[1]==pdf_lines["top_biggest_three"][0]][0]
         headers = [line[0] for line in pdf_lines["lines"] if line[1]==pdf_lines["top_biggest_three"][1] and self.is_header(line[0])]
+        if not headers:
+            headers =[line[0] for line in pdf_lines["lines"] if
+             line[1] == pdf_lines["top_biggest_three"][2] and self.is_header(line[0])]
         print(title,headers)
         return title, headers
 
@@ -125,9 +140,10 @@ class DocumentProcessor:
     def process_document(self,ai_agent_token, course_id, user_id):
         #TODO add user to document
         sections = self.load_and_split_document()
-        print(self.document)
-        title = sections[0].metadata.get("Header 1")
+        print(sections)
+        title = sections[0].metadata.get("Header 1") or sections[1].metadata.get("Header 1")
         self.document.title = title
+        print(self.document.title)
         #course and subject creation TODO subject affiliation will be based on user choice
         extra_data={
             "new_course" : False,
@@ -158,13 +174,15 @@ class DocumentProcessor:
                 extra_data["existing_subject_title"]  = course.subject.title
             course.save()
         else:
-            if course.document:
+            if getattr(course, "document",""):
                 #TODO create custom errors handling
                 raise Exception("course already have a document.One document is allowed at a time")
         extra_data["course_title"] = course.title
+        extra_data["course_id"] = course.id
         self.document.course = course
         self.document.save()
         self.save_sections_and_chunks(sections, course)
+        extra_data["first_section_id"] = course.sections.first().id
         return extra_data
 
 
@@ -172,6 +190,7 @@ class DocumentProcessor:
     def save_sections_and_chunks(self, sections, course):
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
         ensure_punkt_downloaded()
+        ensure_punkt_tab_downloaded()
         for section in sections:
             section_title = section.metadata.get("Header 2", "Introduction")
             section_instance = Section(title=section_title, course=course)
