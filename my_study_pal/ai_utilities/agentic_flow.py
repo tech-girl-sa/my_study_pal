@@ -41,7 +41,7 @@ def input_node(state: StudyPalState) -> StudyPalState:
                         f"{user_info.current_year} at {user_info.academic_level} at {user_info.institution_name}")
     ai_model = user.settings.ai_model
     state.agent_manager= AIAgentClientManager(ai_agent=ai_model)
-    state.course_has_docs = bool(Course.objects.get(id=state.course_id).document)
+    state.course_has_docs = bool(getattr(Course.objects.get(id=state.course_id),"document", ""))
     state.translation_language = user.settings.translation_language
     print(f"[input_node] user_input='{state.user_input}', has_docs={state.course_has_docs}")
     return state
