@@ -35,6 +35,9 @@ class QuestionWithinCourseOrganizer(BaseModel):
 class retrieval_mode(BaseModel):
     retrieval_mode: str
 
+class SubjectDescription(BaseModel):
+    description: str
+
 
 def get_current_sections_structures(query:str, user_id) -> list:
     """Get subjects/courses and sections structure with titles along with their ids.
@@ -102,7 +105,7 @@ class AIAgentClientManager:
             response = self.client.responses.parse(**call_parameters)
             if parsed:
                 return response.output_parsed.dict()
-            return response.text
+            return response.output[0].content[0].text
         if self.agent.name == AiModel.AiAgentNameChoices.GEMINI:
             response = self.client.models.generate_content(**call_parameters)
             if parsed:
@@ -242,7 +245,8 @@ class AIAgentClientManager:
         return (f"Those are the last 20 messages: {self.get_messages_history(user,section_id)} "
                 f"and those messages may or not be relevant to our query: "
                 f"{self.get_similar_messages(query, user,  section_id)}, Inform the user in case question is repeated and "
-                f"that you are going to provide simpler more detailed answers."
+                f"that you are going to provide simpler more detailed answers.In case the last 20 messages array is empty that"
+                f"means the question never had been asked before"
                 f"if it is not clear what is the user referring to assume "
                 f"he is asking about the last ai response.")
 
@@ -261,6 +265,15 @@ class AIAgentClientManager:
         instructions = (f" explain more the following {scope}: {documents} taking into account the users request")
         parameters = self.build_parameters([user_message], instructions=instructions)
         return self.make_call(parameters, parsed=False)
+
+    def get_subject_description(self, subject_title):
+
+        message = (f"We need to add a new Subject into our educational app database and we need to fill the description"
+                   f"field the Subject name is {subject_title}. Provide a short description of one or two phrases maximum ")
+
+        parameters = self.build_parameters([message],
+                                           structured_output=SubjectDescription)
+        return self.make_call(parameters)
 
 
 
