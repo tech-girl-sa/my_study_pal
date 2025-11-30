@@ -46,7 +46,6 @@ class AiModel(models.Model):
 
 
 class Settings(models.Model):
-    temperature = models.FloatField("Temperature", blank=True)
     ai_model = models.ForeignKey("AiModel", verbose_name="AI Model", on_delete=models.SET_NULL,
                                  related_name="settings", null=True)
 
