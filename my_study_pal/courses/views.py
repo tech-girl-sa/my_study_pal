@@ -95,7 +95,7 @@ class SectionsViewset(
     viewsets.GenericViewSet
 ):
     serializer_class = SectionSerializer
-    queryset = Section.objects.all()
+    queryset = Section.objects.all().order_by("created_at")
 
 
 
